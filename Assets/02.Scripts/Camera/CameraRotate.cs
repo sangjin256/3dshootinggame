@@ -27,12 +27,5 @@ public class CameraRotate : MonoBehaviour
         _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
 
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            transform.LookAt(Vector3.zero);
-            _rotationX = 0;
-            _rotationY = 0;
-        }
     }
 }
