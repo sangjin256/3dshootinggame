@@ -3,9 +3,14 @@ using System.Collections;
 using UnityEditor.Build;
 using UnityEngine;
 
-public class Player : BehaviourSingleton<Player>
+public class PlayerController : MonoBehaviour
 {
+    public PlayerDataSO DataSO;
+
     public PlayerStat Stat;
+    public PlayerMove PlayerMove;
+    public PlayerRotate PlayerRotate;
+
     public bool IsExhausted = false;
     public bool IsUsingStamina = false;
 
@@ -14,7 +19,10 @@ public class Player : BehaviourSingleton<Player>
 
     private void Awake()
     {
-        Stat = new PlayerStat(100, 100);
+        Stat = new PlayerStat(DataSO.MaxHealth, DataSO.MaxStamina);
+
+        PlayerMove.Initialize(this);
+        PlayerRotate.Initialize(this);
     }
 
     private void Update()

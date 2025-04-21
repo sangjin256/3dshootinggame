@@ -1,9 +1,15 @@
 using UnityEngine;
 
-public class PlayerRotate : MonoBehaviour
+public class PlayerRotate : MonoBehaviour , IPlayerComponent
 {
     public float RotationSpeed = 150f; // 카메라와 회전속도가 똑같아야 한다.
     private float _rotationX = 0;
+    private PlayerController _controller;
+        
+    public void Initialize(PlayerController controller)
+    {
+        _controller = controller;
+    }
 
     private void Update()
     {

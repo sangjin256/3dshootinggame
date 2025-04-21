@@ -755,7 +755,7 @@ Transform:
   m_GameObject: {fileID: 707107060}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -788,9 +788,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb94f382ad0780946b6e14b71ea602b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 5
-  JumpPower: 5
-  JumpCount: 0
+  _originMoveSpeed: 5
+  _moveSpeed: 5
+  _jumpPower: 5
+  _jumpCount: 0
+  _isClimbing: 0
+  _isRolling: 0
 --- !u!143 &707107067
 CharacterController:
   m_ObjectHideFlags: 0
@@ -828,6 +831,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6303835d8b08b3f4faf59d5cf0d0ce7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DataSO: {fileID: 11400000, guid: 0d1f224be381ccc458f69165244bcb4a, type: 2}
+  PlayerMove: {fileID: 707107066}
+  PlayerRotate: {fileID: 707107065}
   IsExhausted: 0
   IsUsingStamina: 0
 --- !u!1 &737771584
@@ -1314,6 +1320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e61e4ea8a647224eb25bc6e89538bab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerController: {fileID: 707107068}
 --- !u!1001 &1302970681
 PrefabInstance:
   m_ObjectHideFlags: 0
