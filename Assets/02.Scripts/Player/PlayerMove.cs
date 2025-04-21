@@ -19,12 +19,9 @@ public class PlayerMove : MonoBehaviour
         Vector3 dir = new Vector3(h, 0, v);
         dir = dir.normalized;
 
-        Debug.Log("1 " + dir);
         // 메인카메라를 기준으로 방향을 변환한다.
         dir = transform.TransformDirection(dir);
         // TransformDirection : 지역 공간의 벡터를 월드 공간의 벡터로 바꿔주는 함수
-
-        Debug.Log("2 " + dir);
 
         transform.position += dir * MoveSpeed * Time.deltaTime;
     }
