@@ -56,6 +56,7 @@ public class PlayerMove : MonoBehaviour
             JumpCount = 0;
             if (_isClimbing)
             {
+                // yVelocity가 필드 위에서 계속 -로 가는 문제있음
                 _yVelocity = 0;
                 _isClimbing = false;
                 Player.I.IsUsingStamina = false;
