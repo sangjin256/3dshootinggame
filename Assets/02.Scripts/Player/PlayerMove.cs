@@ -52,7 +52,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
         #region 점프
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("나 왔어!");
             Jump();
         }
         #endregion
@@ -102,7 +101,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
             _direction.y = _yVelocity;
         }
 
-        Debug.Log(_direction);
         _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
 

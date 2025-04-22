@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public PlayerStat Stat;
     public PlayerMove PlayerMove;
     public PlayerRotate PlayerRotate;
+    public PlayerFire PlayerFire;
 
     public bool IsExhausted = false;
     public bool IsUsingStamina = false;
@@ -23,6 +24,7 @@ public class PlayerController : MonoBehaviour
 
         PlayerMove.Initialize(this);
         PlayerRotate.Initialize(this);
+        PlayerFire.Initialize(this);
     }
 
     private void Update()
