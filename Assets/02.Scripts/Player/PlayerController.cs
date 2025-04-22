@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Stat.Stamina < Stat.MaxStamina && IsUsingStamina == false) ChargeStamina(15f * Time.deltaTime);
+        if (Stat.Stamina < Stat.MaxStamina && !IsUsingStamina) ChargeStamina(15f * Time.deltaTime);
     }
 
     public void UseStamina(float amount)
@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
         if (Stat.Stamina <= 0)
         {
             Stat.Stamina = 0;
-            if(IsExhausted == false) StartCoroutine(Exhausted());
+            if(!IsExhausted) StartCoroutine(Exhausted());
         }
         OnStaminaChanged?.Invoke();
     }
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     public void ChargeStamina(float amount)
     {
-        if (IsExhausted == false)
+        if (!IsExhausted)
         {
             Stat.Stamina += amount;
             if (Stat.Stamina >= Stat.MaxStamina) Stat.Stamina = Stat.MaxStamina;

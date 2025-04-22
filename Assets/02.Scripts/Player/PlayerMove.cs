@@ -14,8 +14,8 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
     [SerializeField] private float _originMoveSpeed = 5f;
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpPower = 5f;
-
     [SerializeField] private int _jumpCount = 0;
+
     [SerializeField] private bool _isClimbing = false;
     [SerializeField] private bool _isRolling = false;
 
@@ -36,6 +36,7 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
     {
         _characterController = GetComponent<CharacterController>();
     }
+
     public void Initialize(PlayerController controller)
     {
         _controller = controller;
@@ -48,12 +49,13 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
 
         if(!_isRolling && !_isClimbing) _direction = new Vector3(h, -0.01f, v).normalized;
 
-
+        #region 점프
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("나 왔어!");
             Jump();
         }
+        #endregion
 
         #region 스프린트
         if (Input.GetKey(KeyCode.LeftShift))
@@ -86,7 +88,13 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
         if (!_isRolling && Input.GetKeyDown(KeyCode.E)) Roll();
         #endregion
 
+        #region 벽타기
         if (v > 0f && ((int)_characterController.collisionFlags & (int)CollisionFlags.Sides) != 0) Climb();
+        if ((_characterController.collisionFlags & CollisionFlags.Sides) == 0)
+        {
+            _isClimbing = false;
+        }
+        #endregion
 
         if (!_isClimbing)
         {
@@ -98,10 +106,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
         _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
 
-        if((_characterController.collisionFlags & CollisionFlags.Sides) == 0)
-        {
-            _isClimbing = false;
-        }
         if((_characterController.collisionFlags & CollisionFlags.Below) != 0)
         {
             _jumpCount = 0;
