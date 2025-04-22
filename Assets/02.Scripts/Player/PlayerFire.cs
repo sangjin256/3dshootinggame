@@ -47,6 +47,8 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     public Action OnReloading;
     public Action StopReloading;
 
+    public LineRenderer LineRenderer;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -159,6 +161,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
                         BulletEffect.transform.position = hitInfo.point;
                         BulletEffect.transform.forward = hitInfo.normal;
                         BulletEffect.Play();
+                        DrawBulletLine(hitInfo.point);
                     }
                     _elapsedTime = 0f;
                 }
@@ -169,7 +172,11 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
                     _spreadTime = _spreadCoolTime - 0.5f;
                 }
             }
-            else CameraController.I.IsShooting = false;
+            else
+            {
+                ResetBulletLine();
+                CameraController.I.IsShooting = false;
+            }
             _elapsedTime += Time.deltaTime;
 
             // 장전 취소
@@ -177,6 +184,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
             {
                 IsReloading = false;
                 StopAllCoroutines();
+                ResetBulletLine();
                 StopReloading?.Invoke();
             }
         }
@@ -186,6 +194,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
             _elapsedTime = 0.1f;
             _spreadTime = 0f;
             CameraController.I.IsShooting = false;
+            ResetBulletLine();
         }
     }
 
@@ -219,5 +228,17 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         BulletCount = MaxBulletCount;
         OnBulletCountChanged?.Invoke();
         StopReloading.Invoke();
+    }
+
+    public void DrawBulletLine(Vector3 DestinationVector)
+    {
+        LineRenderer.gameObject.SetActive(true);
+        LineRenderer.SetPosition(0, FirePosition.transform.position - new Vector3(0f, 0.25f, 0f));
+        LineRenderer.SetPosition(1, DestinationVector);
+    }
+
+    public void ResetBulletLine()
+    {
+        LineRenderer.gameObject.SetActive(false);
     }
 }
