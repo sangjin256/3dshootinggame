@@ -25,12 +25,14 @@ public class FPSCamera : MonoBehaviour, ICameraComponent
         _rotationY += mouseY * RotationSpeed * Time.deltaTime;
         _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
 
+        if (_controller.IsShooting) _rotationY += _controller.BoundY;
+
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
     }
 
     private void LateUpdate()
     {
-        transform.position = _controller.FPSTarget.position;
+        transform.position = _controller.ShakePosition + _controller.FPSTarget.position;
     }
 
 
