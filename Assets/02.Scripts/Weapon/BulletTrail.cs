@@ -1,12 +1,13 @@
 using UnityEngine;
 
-public class BulletTrail : MonoBehaviour
+public class BulletTrail : MonoBehaviour, IPoolable
 {
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
     private float _progress = 0f;
 
     private float _speed = 40f;
+    private GameObjectPool<BulletTrail> _thisPool;
 
     public void Initialize(Vector3 startPosition, Vector3 targetPosition)
     {
@@ -25,8 +26,15 @@ public class BulletTrail : MonoBehaviour
         {
             _progress = 0f;
             transform.position = _startPosition;
-            gameObject.SetActive(false);
-
+            ReturnToPool();
         }
+    }
+    public void SetPoolReference<T>(GameObjectPool<T> pool) where T : MonoBehaviour, IPoolable
+    {
+        _thisPool = pool as GameObjectPool<BulletTrail>;
+    }
+    public void ReturnToPool()
+    {
+        _thisPool?.ReturnToPool(this);
     }
 }

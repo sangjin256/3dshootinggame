@@ -1297,6 +1297,7 @@ MonoBehaviour:
   KnockbackPower: 1.5
   KnockbackTimer: 0.5
   KnockbackElapsedTime: 0
+  pistol: {fileID: 1006660003}
 --- !u!1001 &749510541
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1558,6 +1559,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1006659999 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1590483450198064, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+  m_PrefabInstance: {fileID: 1926696243}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1006660003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006659999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45d87d6e9679384498a123b5c7f4dcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxAmmo: 50
+  CurrentAmmo: 50
+  FireCoolTime: 0.1
+  FireElapsedTime: 0.1
+  SpreadCoolTime: 2
+  SpreadElapsedTime: 0
+  SpreadAmount: 0.07
+  KnockbackElapsedTime: 0
+  KnockbackTimer: 0.3
+  KnockbackPower: 5
+  IsReloading: 0
+  DamageAmount: 10
+  FirePosition: {fileID: 1149430962}
+  BulletEffect: {fileID: 1783185007}
+  BulletTrailPrefab: {fileID: 5334702245796737060, guid: 599ca132c0c33854197ce6d05713537d, type: 3}
 --- !u!1001 &1070361712
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2608,7 +2641,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1590483450198064, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1006660003}
   m_SourcePrefab: {fileID: 100100000, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
 --- !u!1001 &1948052973
 PrefabInstance:

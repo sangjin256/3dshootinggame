@@ -1,0 +1,96 @@
+using UnityEngine;
+using System.Collections;
+
+public abstract class BaseFirearm : MonoBehaviour, IFireable
+{
+    public int MaxAmmo;
+    public int CurrentAmmo;
+
+    public float FireCoolTime;
+    public float FireElapsedTime;
+
+    public float SpreadCoolTime;
+    public float SpreadElapsedTime;
+    public float SpreadAmount;
+
+    public float KnockbackElapsedTime;
+    public float KnockbackTimer;
+    public float KnockbackPower;
+
+    public bool IsReloading;
+    public int DamageAmount;
+
+    public Transform FirePosition;
+    public ParticleSystem BulletEffect;
+    public GameObject BulletTrailPrefab;
+    public GameObjectPool<BulletTrail> BulletTrailPool;
+
+    private void Awake()
+    {
+        BulletTrailPool = new GameObjectPool<BulletTrail>(BulletTrailPrefab, MaxAmmo / 2);
+    }
+
+    public virtual void HandleFireInput() { }
+
+    public virtual void Fire() { }
+
+    public virtual void Reload()
+    {
+        if (IsReloading) return;
+
+        if (CurrentAmmo < MaxAmmo)
+        {
+            StartCoroutine(ReLoadCoroutine());
+        }
+    }
+
+    private IEnumerator ReLoadCoroutine()
+    {
+
+        //OnReloading?.Invoke();
+        IsReloading = true;
+        yield return new WaitForSeconds(2f);
+        IsReloading = false;
+        CurrentAmmo = MaxAmmo;
+        //OnBulletCountChanged?.Invoke();
+        //StopReloading.Invoke();
+    }
+
+    protected Vector3 RandomSpreadDirection()
+    {
+        Vector2 randomPosition = Random.insideUnitCircle * ((SpreadCoolTime - SpreadElapsedTime) / SpreadCoolTime) * SpreadAmount;
+        Vector3 finalDireciton = transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0);
+
+        return finalDireciton;
+    }
+
+    protected void OnHitEffect(RaycastHit hitInfo, float shakeMagnitude)
+    {
+        CameraManager.I.Shake(0.1f, shakeMagnitude);
+
+        BulletEffect.transform.position = hitInfo.point;
+        BulletEffect.transform.forward = hitInfo.normal;
+        BulletEffect.Play();
+
+        BulletTrail trail = BulletTrailPool.Get();
+        trail.Initialize(FirePosition.position, hitInfo.point);
+    }
+
+    public void Knockback(Enemy target, Vector3 dir)
+    {
+        StartCoroutine(Knockback_Coroutine(target.GetComponent<CharacterController>(), dir));
+    }
+
+    public IEnumerator Knockback_Coroutine(CharacterController targetController, Vector3 direction)
+    {
+        KnockbackElapsedTime = 0f;
+
+        while (KnockbackElapsedTime < KnockbackTimer)
+        {
+            targetController.Move(direction * KnockbackPower * Time.deltaTime);
+            KnockbackElapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+}

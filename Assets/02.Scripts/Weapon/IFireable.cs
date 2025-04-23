@@ -2,5 +2,6 @@ using UnityEngine;
 
 public interface IFireable
 {
-    public void FireBullet();
+    public void Fire();
+    public void Reload();
 }

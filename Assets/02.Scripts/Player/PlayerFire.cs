@@ -55,6 +55,8 @@ public class PlayerFire : APlayerComponent
     public float KnockbackTimer = 0.5f;
     public float KnockbackElapsedTime = 0f;
 
+    public Pistol pistol;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -119,8 +121,9 @@ public class PlayerFire : APlayerComponent
     private void Update()
     {
         FireBomb();
-        FireBullet();
-        ReLoading();
+        pistol.HandleFireInput();
+        //FireBullet();
+        ////ReLoading();
     }
 
     private void FireBomb()
@@ -161,131 +164,131 @@ public class PlayerFire : APlayerComponent
 
     }
 
-    private void FireBullet()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            if (BulletCount > 0)
-            {
-                CameraManager.I.IsShooting = true;
-                if (_elapsedTime >= _fireCooltime)
-                {
-                    Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * ((_spreadCoolTime - _spreadTime) / _spreadCoolTime) * _spreadAmount;
+    //private void FireBullet()
+    //{
+    //    if (Input.GetMouseButton(0))
+    //    {
+    //        if (BulletCount > 0)
+    //        {
+    //            CameraManager.I.IsShooting = true;
+    //            if (_elapsedTime >= _fireCooltime)
+    //            {
+    //                Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * ((_spreadCoolTime - _spreadTime) / _spreadCoolTime) * _spreadAmount;
 
-                    Vector3 finalDireciton = _camera.transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0);
-                    Ray ray = new Ray(FirePosition.transform.position, finalDireciton);
-                    RaycastHit hitInfo = new RaycastHit();
+    //                Vector3 finalDireciton = _camera.transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0);
+    //                Ray ray = new Ray(FirePosition.transform.position, finalDireciton);
+    //                RaycastHit hitInfo = new RaycastHit();
 
-                    bool isHit = Physics.Raycast(ray, out hitInfo, 50f);
-                    if (isHit)
-                    {
-                        UseBullet();
-                        CameraManager.I.Shake(0.1f, 0.1f);
+    //                bool isHit = Physics.Raycast(ray, out hitInfo, 50f);
+    //                if (isHit)
+    //                {
+    //                    UseBullet();
+    //                    CameraManager.I.Shake(0.1f, 0.1f);
 
-                        BulletEffect.transform.position = hitInfo.point;
-                        BulletEffect.transform.forward = hitInfo.normal;
-                        BulletEffect.Play();
-                        //DrawBulletLine(hitInfo.point);
-                        GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), hitInfo.point);
+    //                    BulletEffect.transform.position = hitInfo.point;
+    //                    BulletEffect.transform.forward = hitInfo.normal;
+    //                    BulletEffect.Play();
+    //                    //DrawBulletLine(hitInfo.point);
+    //                    GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), hitInfo.point);
 
-                        if (hitInfo.collider.gameObject.CompareTag("Enemy"))
-                        {
-                            Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
-                            Damage damage = new Damage();
-                            damage.Value = 10;
-                            damage.From = this.gameObject;
+    //                    if (hitInfo.collider.gameObject.CompareTag("Enemy"))
+    //                    {
+    //                        Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+    //                        Damage damage = new Damage();
+    //                        damage.Value = 10;
+    //                        damage.From = this.gameObject;
 
-                            enemy.TakeDamage(damage);
-                            Knockback(enemy, finalDireciton);
-                        }
-                    }
-                    else
-                    {
-                        UseBullet();
-                        CameraManager.I.Shake(0.1f, 0.1f);
-                        GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), FirePosition.transform.position + finalDireciton.normalized * 30f);
-                    }
-                    _elapsedTime = 0f;
-                }
+    //                        enemy.TakeDamage(damage);
+    //                        Knockback(enemy, finalDireciton);
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    UseBullet();
+    //                    CameraManager.I.Shake(0.1f, 0.1f);
+    //                    GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), FirePosition.transform.position + finalDireciton.normalized * 30f);
+    //                }
+    //                _elapsedTime = 0f;
+    //            }
 
-                _spreadTime += Time.deltaTime;
-                if (_spreadTime + 0.5f >= _spreadCoolTime)
-                {
-                    _spreadTime = _spreadCoolTime - 0.5f;
-                }
-            }
-            else
-            {
-                //ResetBulletLine();
-                CameraManager.I.IsShooting = false;
-            }
-            _elapsedTime += Time.deltaTime;
+    //            _spreadTime += Time.deltaTime;
+    //            if (_spreadTime + 0.5f >= _spreadCoolTime)
+    //            {
+    //                _spreadTime = _spreadCoolTime - 0.5f;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            //ResetBulletLine();
+    //            CameraManager.I.IsShooting = false;
+    //        }
+    //        _elapsedTime += Time.deltaTime;
 
-            // 장전 취소
-            if (IsReloading)
-            {
-                IsReloading = false;
-                StopAllCoroutines();
-                //ResetBulletLine();
-                StopReloading?.Invoke();
-            }
-        }
+    //        // 장전 취소
+    //        if (IsReloading)
+    //        {
+    //            IsReloading = false;
+    //            StopAllCoroutines();
+    //            //ResetBulletLine();
+    //            StopReloading?.Invoke();
+    //        }
+    //    }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            _elapsedTime = 0.1f;
-            _spreadTime = 0f;
-            CameraManager.I.IsShooting = false;
-            //ResetBulletLine();
-        }
-    }
+    //    if (Input.GetMouseButtonUp(0))
+    //    {
+    //        _elapsedTime = 0.1f;
+    //        _spreadTime = 0f;
+    //        CameraManager.I.IsShooting = false;
+    //        //ResetBulletLine();
+    //    }
+    //}
 
-    private void UseBullet()
-    {
-        BulletCount--;
+    //private void UseBullet()
+    //{
+    //    BulletCount--;
 
-        OnBulletCountChanged?.Invoke();
-    }
+    //    OnBulletCountChanged?.Invoke();
+    //}
 
-    private void ReLoading()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            if (IsReloading) return;
+    //private void ReLoading()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.R))
+    //    {
+    //        if (IsReloading) return;
 
-            if (BulletCount < MaxBulletCount)
-            {
-                StartCoroutine(ReLoadCoroutine());
-            }
-        }
-    }
+    //        if (BulletCount < MaxBulletCount)
+    //        {
+    //            StartCoroutine(ReLoadCoroutine());
+    //        }
+    //    }
+    //}
 
-    private IEnumerator ReLoadCoroutine()
-    {
+    //private IEnumerator ReLoadCoroutine()
+    //{
 
-        OnReloading?.Invoke();
-        IsReloading = true;
-        yield return new WaitForSeconds(2f);
-        IsReloading = false;
-        BulletCount = MaxBulletCount;
-        OnBulletCountChanged?.Invoke();
-        StopReloading.Invoke();
-    }
+    //    OnReloading?.Invoke();
+    //    IsReloading = true;
+    //    yield return new WaitForSeconds(2f);
+    //    IsReloading = false;
+    //    BulletCount = MaxBulletCount;
+    //    OnBulletCountChanged?.Invoke();
+    //    StopReloading.Invoke();
+    //}
 
-    public void Knockback(Enemy target, Vector3 dir)
-    {
-        StartCoroutine(Knockback_Coroutine(target.GetComponent<CharacterController>(), dir));
-    }
+    //public void Knockback(Enemy target, Vector3 dir)
+    //{
+    //    StartCoroutine(Knockback_Coroutine(target.GetComponent<CharacterController>(), dir));
+    //}
 
-    public IEnumerator Knockback_Coroutine(CharacterController targetController, Vector3 direction)
-    {
-        KnockbackElapsedTime = 0f;
+    //public IEnumerator Knockback_Coroutine(CharacterController targetController, Vector3 direction)
+    //{
+    //    KnockbackElapsedTime = 0f;
         
-        while(KnockbackElapsedTime < KnockbackTimer)
-        {
-            targetController.Move(direction * KnockbackPower * Time.deltaTime);
-            KnockbackElapsedTime += Time.deltaTime;
-            yield return null;
-        }
-    }
+    //    while(KnockbackElapsedTime < KnockbackTimer)
+    //    {
+    //        targetController.Move(direction * KnockbackPower * Time.deltaTime);
+    //        KnockbackElapsedTime += Time.deltaTime;
+    //        yield return null;
+    //    }
+    //}
 }

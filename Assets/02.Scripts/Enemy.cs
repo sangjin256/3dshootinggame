@@ -133,7 +133,7 @@ public class Enemy : MonoBehaviour
 
         Vector3 dir = (PatrolPositionArr[CurrentPatrolIndex] - transform.position).normalized;
         _characterController.Move(dir * MoveSpeed * Time.deltaTime);
-        Debug.Log(Vector3.Distance(transform.position, PatrolPositionArr[CurrentPatrolIndex]));
+
         if (Vector3.Distance(transform.position, PatrolPositionArr[CurrentPatrolIndex]) <= 0.1f)
         {
             CurrentPatrolIndex++;
