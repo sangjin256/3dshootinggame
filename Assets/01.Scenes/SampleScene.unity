@@ -800,12 +800,11 @@ GameObject:
   - component: {fileID: 363747025}
   - component: {fileID: 363747024}
   - component: {fileID: 363747023}
-  - component: {fileID: 363747022}
   - component: {fileID: 363747021}
   - component: {fileID: 363747026}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -834,29 +833,6 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!136 &363747022
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 363747020}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &363747023
 MeshRenderer:
@@ -920,7 +896,7 @@ Transform:
   m_GameObject: {fileID: 363747020}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.57, y: 1.26, z: 4.35}
+  m_LocalPosition: {x: 6, y: 1.08, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -939,9 +915,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentState: 0
+  PatrolPositionArr:
+  - {x: -11, y: 1, z: 2}
+  - {x: -11, y: 1, z: 18}
+  - {x: 6, y: 1, z: 2}
+  - {x: 6, y: 1, z: 18}
+  CurrentPatrolIndex: 0
+  IdleCoolTime: 3
+  IdleElapsedTime: 0
   MoveSpeed: 3.3
   FindDistance: 6
   AttackDistance: 3
+  ReturnDistance: 10
+  AttackCooltime: 2
+  Health: 100
+  DamagedTime: 0.5
+  DeathTime: 2
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,6 +1275,7 @@ MonoBehaviour:
   BulletTrailPrefab: {fileID: 5334702245796737060, guid: 599ca132c0c33854197ce6d05713537d, type: 3}
   BulletTrailPoolList: []
   BulletTrail: {fileID: 0}
+  KnockbackPower: 1.5
 --- !u!1001 &749510541
 PrefabInstance:
   m_ObjectHideFlags: 0

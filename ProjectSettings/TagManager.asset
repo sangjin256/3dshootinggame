@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Collide
   - FxTemporaire
+  - Enemy
   layers:
   - Default
   - TransparentFX

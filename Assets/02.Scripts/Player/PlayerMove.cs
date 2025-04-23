@@ -42,45 +42,15 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
 
         if(!_isRolling && !_isClimbing) _direction = new Vector3(h, -0.01f, v).normalized;
 
-        #region 점프
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Jump();
-        }
-        #endregion
+        Jump();
+        Sprint();
+        Roll();
 
-        #region 스프린트
-        if (Input.GetKey(KeyCode.LeftShift)) Sprint();
-        if (Input.GetKeyUp(KeyCode.LeftShift)) EndBehaviour();
-        #endregion
-
-        #region 대쉬
-        if (_isRolling)
-        {
-            if(_rollTime >= _rollDuration)
-            {
-                _rollTime = 0;
-                _isRolling = false;
-                EndBehaviour();
-            }
-            else
-            {
-                _direction = Vector3.forward;
-            }
-            _rollTime += Time.deltaTime;
-        }
-
-        if (!_isRolling && Input.GetKeyDown(KeyCode.E)) Roll();
-        #endregion
-
-        #region 벽타기
-        if (v > 0f && ((int)_characterController.collisionFlags & (int)CollisionFlags.Sides) != 0) Climb();
+        if(v > 0) Climb();
         if ((_characterController.collisionFlags & CollisionFlags.Sides) == 0)
         {
             _isClimbing = false;
         }
-        #endregion
-
         if (!_isClimbing)
         {
             _yVelocity += GRAVITY * Time.deltaTime;
@@ -99,26 +69,36 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
 
     public void Jump()
     {
-        if (_jumpCount < 2)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            _yVelocity = _jumpPower;
-            _jumpCount++;
+            if (_jumpCount < 2)
+            {
+                _yVelocity = _jumpPower;
+                _jumpCount++;
+            }
         }
+
+
     }
 
     public void Sprint()
     {
-        if (_controller.IsExhausted == false)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            _moveSpeed = 12f;
-            _controller.UseStamina(12f * Time.deltaTime);
+            if (_controller.IsExhausted == false)
+            {
+                _moveSpeed = 12f;
+                _controller.UseStamina(12f * Time.deltaTime);
 
-            _controller.IsUsingStamina = true;
+                _controller.IsUsingStamina = true;
+            }
+            else
+            {
+                EndBehaviour();
+            }
         }
-        else
-        {
-            EndBehaviour();
-        }
+
+        if (Input.GetKeyUp(KeyCode.LeftShift)) EndBehaviour();
     }
 
     public void EndBehaviour()
@@ -129,29 +109,50 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
 
     public void Roll()
     {
-        if (_controller.IsExhausted == false)
+        if (_isRolling)
         {
-            _isRolling = true;
-            _direction = Vector3.forward;
-            _moveSpeed = _rollSpeed;
-            _controller.UseStamina(20f);
+            if (_rollTime >= _rollDuration)
+            {
+                _rollTime = 0;
+                _isRolling = false;
+                EndBehaviour();
+            }
+            else
+            {
+                _direction = Vector3.forward;
+            }
+            _rollTime += Time.deltaTime;
+        }
+
+        if (!_isRolling && Input.GetKeyDown(KeyCode.E))
+        {
+            if (_controller.IsExhausted == false)
+            {
+                _isRolling = true;
+                _direction = Vector3.forward;
+                _moveSpeed = _rollSpeed;
+                _controller.UseStamina(20f);
+            }
         }
     }
 
     public void Climb()
     {
-        if (_controller.IsExhausted == false)
+        if (((int)_characterController.collisionFlags & (int)CollisionFlags.Sides) != 0)
         {
-            _yVelocity = 0;
-            _isClimbing = true;
-            _direction = new Vector3(0, 1, .7f).normalized;
-            _controller.UseStamina(12f * Time.deltaTime);
-            _controller.IsUsingStamina = true;
-        }
-        else
-        {
-            _isClimbing = false;
-            _controller.IsUsingStamina = false;
+            if (_controller.IsExhausted == false)
+            {
+                _yVelocity = 0;
+                _isClimbing = true;
+                _direction = new Vector3(0, 1, .7f).normalized;
+                _controller.UseStamina(12f * Time.deltaTime);
+                _controller.IsUsingStamina = true;
+            }
+            else
+            {
+                _isClimbing = false;
+                _controller.IsUsingStamina = false;
+            }
         }
     }
 }

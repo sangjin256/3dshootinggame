@@ -38,12 +38,12 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     private float _spreadAmount = 0.07f;
 
     private bool IsReloading = false;
-    
+
     public ParticleSystem BulletEffect;
     public GameObject BulletTrailPrefab;
     public List<GameObject> BulletTrailPoolList;
     private int _bulletTrailIndex = 0;
-    
+
 
     public Action OnGrenadeChanged;
     public Action OnBulletCountChanged;
@@ -51,6 +51,10 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     public Action StopReloading;
 
     public TrailRenderer BulletTrail;
+
+    public float KnockbackPower = 1.5f;
+    public float KnockbackTimer = 0.5f;
+    public float KnockbackElapsedTime = 0f;
 
     private void Start()
     {
@@ -68,7 +72,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     public void InitializeBombPool()
     {
         BombPoolList = new List<GameObject>();
-        for(int i = 0; i < MaxBombCount * 2; i++)
+        for (int i = 0; i < MaxBombCount * 2; i++)
         {
             GameObject Bomb = Instantiate(BombPrefab);
             Bomb.SetActive(false);
@@ -79,7 +83,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     public void InitializeBulletTrailPool()
     {
         BulletTrailPoolList = new List<GameObject>();
-        for(int i = 0; i < MaxBulletCount / 2; i++)
+        for (int i = 0; i < MaxBulletCount / 2; i++)
         {
             GameObject bulletTrail = Instantiate(BulletTrailPrefab);
             bulletTrail.SetActive(false);
@@ -127,7 +131,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
 
     private void FireBomb()
     {
-        
+
         if (Input.GetMouseButtonDown(1))
         {
             if (IsBombLeft())
@@ -189,6 +193,17 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
                         BulletEffect.Play();
                         //DrawBulletLine(hitInfo.point);
                         GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), hitInfo.point);
+
+                        if (hitInfo.collider.gameObject.CompareTag("Enemy"))
+                        {
+                            Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+                            Damage damage = new Damage();
+                            damage.Value = 10;
+                            damage.From = this.gameObject;
+
+                            enemy.TakeDamage(damage);
+                            Knockback(enemy, finalDireciton);
+                        }
                     }
                     else
                     {
@@ -243,8 +258,8 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (IsReloading) return;
-            
-            if(BulletCount < MaxBulletCount)
+
+            if (BulletCount < MaxBulletCount)
             {
                 StartCoroutine(ReLoadCoroutine());
             }
@@ -263,15 +278,20 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         StopReloading.Invoke();
     }
 
-    //public void DrawBulletLine(Vector3 DestinationVector)
-    //{
-    //    BulletTrail.gameObject.SetActive(true);
-    //    BulletTrail.SetPosition(0, FirePosition.transform.position - new Vector3(0f, 0.25f, 0f));
-    //    BulletTrail.SetPosition(1, DestinationVector);
-    //}
+    public void Knockback(Enemy target, Vector3 dir)
+    {
+        StartCoroutine(Knockback_Coroutine(target.GetComponent<CharacterController>(), dir));
+    }
 
-    //public void ResetBulletLine()
-    //{
-    //    BulletTrail.gameObject.SetActive(false);
-    //}
+    public IEnumerator Knockback_Coroutine(CharacterController targetController, Vector3 direction)
+    {
+        KnockbackElapsedTime = 0f;
+        
+        while(KnockbackElapsedTime < KnockbackTimer)
+        {
+            targetController.Move(direction * KnockbackPower * Time.deltaTime);
+            KnockbackElapsedTime += Time.deltaTime;
+            yield return null;
+        }
+    }
 }

@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -10,6 +12,7 @@ public class Enemy : MonoBehaviour
     public enum EnemyState
     {
         Idle,
+        Patrol,
         Trace,
         Return,
         Attack,
@@ -23,13 +26,21 @@ public class Enemy : MonoBehaviour
     private GameObject _player;
     private CharacterController _characterController;
     private Vector3 _startPosition;
+    private Vector3[] PatrolPositionArr = { new Vector3(-11, 1.08f, 2), new Vector3(-11, 1.08f, 18), new Vector3(6, 1.08f, 18), new Vector3(6, 1.08f, 2)};
 
-    public float MoveSpeed = 3.3f;
-    public float FindDistance = 5f;
-    public float AttackDistance = 2.5f;
-    public float ReturnDistance = 10f;
-    public float AttackCooltime = 2f;
-    private float _attackElapsedTime = 0f;
+    public int CurrentPatrolIndex           = 0;
+    public float IdleCoolTime               = 3f;
+    public float IdleElapsedTime            = 0f;
+    public float MoveSpeed                  = 3.3f;
+    public float FindDistance               = 5f;
+    public float AttackDistance             = 2.5f;
+    public float ReturnDistance             = 10f;
+    public float AttackCooltime             = 2f;
+    private float _attackElapsedTime        = 0f;
+    public int Health                       = 100;
+    public float DamagedTime                = 0.5f;
+    public float DeathTime                  = 2f;
+
 
     private void Start()
     {
@@ -47,6 +58,11 @@ public class Enemy : MonoBehaviour
                     Idle();
                     break;
                 }
+            case EnemyState.Patrol:
+                {
+                    Patrol();
+                    break;
+                }
             case EnemyState.Trace:
                 {
                     Trace();
@@ -62,31 +78,66 @@ public class Enemy : MonoBehaviour
                     Attack();
                     break;
                 }
-            case EnemyState.Damaged:
-                {
-                    Damaged();
-                    break;
-                }
-            case EnemyState.Die:
-                {
-                    Die();
-                    break;
-                }
         }
+    }
+
+    public void TakeDamage(Damage damage)
+    {
+        if (CurrentState == EnemyState.Damaged || CurrentState == EnemyState.Die) return;
+
+        Health -= damage.Value;
+
+        if(Health <= 0)
+        {
+            CurrentState = EnemyState.Die;
+            Debug.Log($"상태전환 : {CurrentState} -> Die");
+            CurrentState = EnemyState.Die;
+            StartCoroutine(Die_Coroutine());
+            return;
+        }
+
+        Debug.Log($"상태전환 : {CurrentState} -> Damaged");
+
+        CurrentState = EnemyState.Damaged;
+        StartCoroutine(Damagaed_Coroutine());
     }
 
     // 3. 상태 함수들을 구현한다.
     private void Idle()
     {
-        // 행동 : 가만히 있는다.
-
-        // 필요 속성
-        // 1. 플레이어 (위치)
-        // 2. Find
         if(Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
         {
             Debug.Log("상태전환 : Idle -> Trace");
+            IdleElapsedTime = 0f;
             CurrentState = EnemyState.Trace;
+        }
+
+        IdleElapsedTime += Time.deltaTime;
+        if (IdleElapsedTime >= IdleCoolTime)
+        {
+            Debug.Log("상태전환 : Idle -> Patrol");
+            IdleElapsedTime = 0f;
+            CurrentPatrolIndex = 0;
+            CurrentState = EnemyState.Patrol;
+        }
+    }
+
+    private void Patrol()
+    {
+        if (Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
+        {
+            Debug.Log("상태전환 : Patrol -> Trace");
+            CurrentState = EnemyState.Trace;
+            return;
+        }
+
+        Vector3 dir = (PatrolPositionArr[CurrentPatrolIndex] - transform.position).normalized;
+        _characterController.Move(dir * MoveSpeed * Time.deltaTime);
+        Debug.Log(Vector3.Distance(transform.position, PatrolPositionArr[CurrentPatrolIndex]));
+        if (Vector3.Distance(transform.position, PatrolPositionArr[CurrentPatrolIndex]) <= 0.1f)
+        {
+            CurrentPatrolIndex++;
+            if (CurrentPatrolIndex >= PatrolPositionArr.Length) CurrentPatrolIndex = 0;
         }
     }
 
@@ -156,13 +207,16 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Damaged()
+    public IEnumerator Damagaed_Coroutine()
     {
-        // 행동 : 피격당한다.
+        yield return new WaitForSeconds(DamagedTime);
+        Debug.Log("상태전환 : Damaged -> Trace");
+        CurrentState = EnemyState.Trace;
     }
 
-    private void Die()
+    private IEnumerator Die_Coroutine()
     {
-        // 행동 : 죽는다
+        yield return new WaitForSeconds(DeathTime);
+        gameObject.SetActive(false);
     }
 }

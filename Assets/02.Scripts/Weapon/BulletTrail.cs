@@ -12,10 +12,6 @@ public class BulletTrail : MonoBehaviour
     {
         _startPosition = startPosition;
         _targetPosition = targetPosition;
-    }
-
-    private void OnEnable()
-    {
         _progress = 0f;
         transform.position = _startPosition;
     }
