@@ -40,6 +40,9 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     private bool IsReloading = false;
     
     public ParticleSystem BulletEffect;
+    public GameObject BulletTrailPrefab;
+    public List<GameObject> BulletTrailPoolList;
+    private int _bulletTrailIndex = 0;
     
 
     public Action OnGrenadeChanged;
@@ -47,7 +50,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     public Action OnReloading;
     public Action StopReloading;
 
-    public LineRenderer LineRenderer;
+    public TrailRenderer BulletTrail;
 
     private void Start()
     {
@@ -59,6 +62,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     {
         _controller = controller;
         InitializeBombPool();
+        InitializeBulletTrailPool();
     }
 
     public void InitializeBombPool()
@@ -69,6 +73,17 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
             GameObject Bomb = Instantiate(BombPrefab);
             Bomb.SetActive(false);
             BombPoolList.Add(Bomb);
+        }
+    }
+
+    public void InitializeBulletTrailPool()
+    {
+        BulletTrailPoolList = new List<GameObject>();
+        for(int i = 0; i < MaxBulletCount / 2; i++)
+        {
+            GameObject bulletTrail = Instantiate(BulletTrailPrefab);
+            bulletTrail.SetActive(false);
+            BulletTrailPoolList.Add(bulletTrail);
         }
     }
 
@@ -83,6 +98,18 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         OnGrenadeChanged?.Invoke();
 
         return bomb;
+    }
+
+    public GameObject GetBulletTrailPool(Vector3 startPos, Vector3 targetPos)
+    {
+        GameObject bullet = BulletTrailPoolList[_bulletTrailIndex];
+        bullet.GetComponent<BulletTrail>().Initialize(startPos, targetPos);
+
+        _bulletTrailIndex++;
+        if (_bulletTrailIndex >= MaxBulletCount / 2) _bulletTrailIndex = 0;
+
+        bullet.SetActive(true);
+        return bullet;
     }
 
     public bool IsBombLeft()
@@ -128,7 +155,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
                 bombRigidbody.AddForce(_camera.transform.forward * _throwPower, ForceMode.Impulse);
                 bombRigidbody.AddTorque(Vector3.one);
 
-                CameraController.I.Shake(0.1f, 0.1f);
+                CameraManager.I.Shake(0.1f, 0.1f);
                 _throwPower = 0f;
                 IsCharging = false;
             }
@@ -142,26 +169,32 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         {
             if (BulletCount > 0)
             {
-                CameraController.I.IsShooting = true;
+                CameraManager.I.IsShooting = true;
                 if (_elapsedTime >= _fireCooltime)
                 {
                     Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * ((_spreadCoolTime - _spreadTime) / _spreadCoolTime) * _spreadAmount;
 
-                    Debug.Log(_spreadTime + " " + randomPosition);
                     Vector3 finalDireciton = _camera.transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0);
                     Ray ray = new Ray(FirePosition.transform.position, finalDireciton);
                     RaycastHit hitInfo = new RaycastHit();
 
-                    bool isHit = Physics.Raycast(ray, out hitInfo);
+                    bool isHit = Physics.Raycast(ray, out hitInfo, 50f);
                     if (isHit)
                     {
                         UseBullet();
-                        CameraController.I.Shake(0.1f, 0.1f);
+                        CameraManager.I.Shake(0.1f, 0.1f);
 
                         BulletEffect.transform.position = hitInfo.point;
                         BulletEffect.transform.forward = hitInfo.normal;
                         BulletEffect.Play();
-                        DrawBulletLine(hitInfo.point);
+                        //DrawBulletLine(hitInfo.point);
+                        GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), hitInfo.point);
+                    }
+                    else
+                    {
+                        UseBullet();
+                        CameraManager.I.Shake(0.1f, 0.1f);
+                        GetBulletTrailPool(FirePosition.transform.position - new Vector3(0f, 0.5f, 0f), FirePosition.transform.position + finalDireciton.normalized * 30f);
                     }
                     _elapsedTime = 0f;
                 }
@@ -174,8 +207,8 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
             }
             else
             {
-                ResetBulletLine();
-                CameraController.I.IsShooting = false;
+                //ResetBulletLine();
+                CameraManager.I.IsShooting = false;
             }
             _elapsedTime += Time.deltaTime;
 
@@ -184,7 +217,7 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
             {
                 IsReloading = false;
                 StopAllCoroutines();
-                ResetBulletLine();
+                //ResetBulletLine();
                 StopReloading?.Invoke();
             }
         }
@@ -193,8 +226,8 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         {
             _elapsedTime = 0.1f;
             _spreadTime = 0f;
-            CameraController.I.IsShooting = false;
-            ResetBulletLine();
+            CameraManager.I.IsShooting = false;
+            //ResetBulletLine();
         }
     }
 
@@ -230,15 +263,15 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
         StopReloading.Invoke();
     }
 
-    public void DrawBulletLine(Vector3 DestinationVector)
-    {
-        LineRenderer.gameObject.SetActive(true);
-        LineRenderer.SetPosition(0, FirePosition.transform.position - new Vector3(0f, 0.25f, 0f));
-        LineRenderer.SetPosition(1, DestinationVector);
-    }
+    //public void DrawBulletLine(Vector3 DestinationVector)
+    //{
+    //    BulletTrail.gameObject.SetActive(true);
+    //    BulletTrail.SetPosition(0, FirePosition.transform.position - new Vector3(0f, 0.25f, 0f));
+    //    BulletTrail.SetPosition(1, DestinationVector);
+    //}
 
-    public void ResetBulletLine()
-    {
-        LineRenderer.gameObject.SetActive(false);
-    }
+    //public void ResetBulletLine()
+    //{
+    //    BulletTrail.gameObject.SetActive(false);
+    //}
 }

@@ -1,18 +1,12 @@
 using UnityEngine;
 
-public class FPSCamera : MonoBehaviour, ICameraComponent
+public class FPSCamera : MonoBehaviour
 {
-    private CameraController _controller;
     public float RotationSpeed = 150f;
 
     // 카메라 각도는 0도에서부터 시작한다고 기준을 세운다.
     private float _rotationX = 0;
     private float _rotationY = 0;
-
-    public void Initialize(CameraController controller)
-    {
-        _controller = controller;
-    }
 
     private void Update()
     {
@@ -25,14 +19,14 @@ public class FPSCamera : MonoBehaviour, ICameraComponent
         _rotationY += mouseY * RotationSpeed * Time.deltaTime;
         _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
 
-        if (_controller.IsShooting) _rotationY += _controller.BoundY;
+        if (CameraManager.I.IsShooting) _rotationY += CameraManager.I.BoundY;
 
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
     }
 
     private void LateUpdate()
     {
-        transform.position = _controller.ShakePosition + _controller.FPSTarget.position;
+        transform.position = CameraManager.I.ShakePosition + CameraManager.I.FPSTarget.position;
     }
 
 

@@ -4,13 +4,6 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class PlayerMove : MonoBehaviour, IPlayerComponent
 {
-    // 목표 : wasd를 누르면 캐릭터를 '카메라 방향에 맞게' 이동시키고 싶다.
-
-    // 구현 순서 :
-    // 1. 키보드 입력을 받는다.
-    // 2. 입력으로부터 방향을 설정한다.
-    // 3. 방향에 따라 플레이어를 이동한다.
-
     [SerializeField] private float _originMoveSpeed = 5f;
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private float _jumpPower = 5f;
@@ -20,11 +13,11 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
     [SerializeField] private bool _isRolling = false;
 
     private float _rollTime = 0f;
-    private float _rollDuration = 0.2f;  // 대쉬 지속 시간
-    private float _rollSpeed = 30f;  // 대쉬 속도
+    private float _rollDuration = 0.2f;
+    private float _rollSpeed = 30f;
 
-    private const float GRAVITY = -9.8f;  // 중력
-    private float _yVelocity = 0f;        // 중력가속도
+    private const float GRAVITY = -9.8f;
+    private float _yVelocity = 0f;
 
     private CharacterController _characterController;
     private PlayerController _controller;
@@ -57,15 +50,8 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
         #endregion
 
         #region 스프린트
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            Sprint();
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftShift) && _moveSpeed > _originMoveSpeed)
-        {
-            EndBehaviour();
-        }
+        if (Input.GetKey(KeyCode.LeftShift)) Sprint();
+        if (Input.GetKeyUp(KeyCode.LeftShift)) EndBehaviour();
         #endregion
 
         #region 대쉬
@@ -109,8 +95,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
             _jumpCount = 0;
             _yVelocity = 0f;
         }
-        
-
     }
 
     public void Jump()

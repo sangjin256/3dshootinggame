@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 
-public class TPSCamera : MonoBehaviour, ICameraComponent
+public class TPSCamera : MonoBehaviour
 {
-    private CameraController _controller;
     public float HorizontalSpeed = 150f;
     public float VerticalSpeed = 20f;
 
@@ -12,10 +11,9 @@ public class TPSCamera : MonoBehaviour, ICameraComponent
 
     [SerializeField] private float _distance = 0;
 
-    public void Initialize(CameraController controller)
+    private void Start()
     {
-        _controller = controller;
-        _distance = Vector3.Distance(_controller.TPSTarget.position, _controller.TPSTarget.parent.position);
+        _distance = Vector3.Distance(CameraManager.I.TPSTarget.position, CameraManager.I.TPSTarget.parent.position);
     }
 
     private void Update()
@@ -34,7 +32,7 @@ public class TPSCamera : MonoBehaviour, ICameraComponent
         float z = Mathf.Sin(-_rotationY) * _distance;
 
         
-        transform.position = _controller.TPSTarget.parent.position + new Vector3(_controller.TPSTarget.position.x, y, z);
+        transform.position = CameraManager.I.TPSTarget.parent.position + new Vector3(CameraManager.I.TPSTarget.position.x, y, z);
     }
 
     public void RotateHorizontal()
