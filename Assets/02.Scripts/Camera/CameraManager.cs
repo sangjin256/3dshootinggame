@@ -19,8 +19,6 @@ public class CameraManager : BehaviourSingleton<CameraManager>
     private void Awake()
     {
         Transform player = GameObject.FindGameObjectWithTag("Player").transform;
-        FPSTarget = player.GetChild(0).transform;
-        TPSTarget = player.GetChild(1).transform;
     }
 
     public void Shake(float duration, float magnitude)

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UI_Stat : MonoBehaviour
 {
     Slider Slider;
-    Image BGImage;
+    public Image BGImage;
     Color OriginBGColor;
 
     public PlayerController PlayerController;
@@ -14,7 +14,6 @@ public class UI_Stat : MonoBehaviour
     private void Start()
     {
         Slider = GetComponent<Slider>();
-        BGImage = transform.GetChild(0).GetComponent<Image>();
         OriginBGColor = BGImage.color;
         PlayerController.OnStaminaChanged += RefreshStaminaUI;
         PlayerController.OnExhauseted += ExhaustedStaminaUI;

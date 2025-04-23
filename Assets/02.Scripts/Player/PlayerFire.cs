@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class PlayerFire : MonoBehaviour, IPlayerComponent
+public class PlayerFire : APlayerComponent
 {
     // 필요 속성
     // - 발사 위치
@@ -20,7 +20,6 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     private const float _maxThrowPower = 40f;
     private bool IsCharging = false;
 
-    private PlayerController _controller;
     private Camera _camera;
 
     public int BombCount = 3;
@@ -60,11 +59,6 @@ public class PlayerFire : MonoBehaviour, IPlayerComponent
     {
         Cursor.lockState = CursorLockMode.Locked;
         _camera = Camera.main;
-    }
-
-    public void Initialize(PlayerController controller)
-    {
-        _controller = controller;
         InitializeBombPool();
         InitializeBulletTrailPool();
     }

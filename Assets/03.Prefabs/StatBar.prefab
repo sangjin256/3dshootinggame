@@ -108,7 +108,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.014, y: 0.3375}
   m_AnchorMax: {x: 0.98200005, y: 0.65000004}
-  m_AnchoredPosition: {x: 0.7613983, y: 0.42029953}
+  m_AnchoredPosition: {x: 0.7614136, y: 0.42034912}
   m_SizeDelta: {x: -0.74979997, y: -0.8407}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5034408004246566462
@@ -196,6 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5506914948759748002}
   - component: {fileID: 4602265343469507562}
+  - component: {fileID: 4112871117654985769}
   m_Layer: 5
   m_Name: StatBar
   m_TagString: Untagged
@@ -275,3 +276,17 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4112871117654985769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6273281630707569401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e61e4ea8a647224eb25bc6e89538bab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGImage: {fileID: 8024972375988803772}
+  PlayerController: {fileID: 0}

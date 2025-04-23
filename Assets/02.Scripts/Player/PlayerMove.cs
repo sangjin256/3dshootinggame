@@ -1,8 +1,9 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.InputSystem.XR;
 
-public class PlayerMove : MonoBehaviour, IPlayerComponent
+public class PlayerMove : APlayerComponent
 {
     [SerializeField] private float _originMoveSpeed = 5f;
     [SerializeField] private float _moveSpeed = 5f;
@@ -20,7 +21,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
     private float _yVelocity = 0f;
 
     private CharacterController _characterController;
-    private PlayerController _controller;
 
     private Vector3 _direction;
 
@@ -28,11 +28,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-    }
-
-    public void Initialize(PlayerController controller)
-    {
-        _controller = controller;
     }
 
     private void Update()
@@ -77,8 +72,6 @@ public class PlayerMove : MonoBehaviour, IPlayerComponent
                 _jumpCount++;
             }
         }
-
-
     }
 
     public void Sprint()
