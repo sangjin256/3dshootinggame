@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5786992414049797450}
   - component: {fileID: 3166659336176960749}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,6 +61,7 @@ MonoBehaviour:
   FirePosition: {fileID: 1210345281655121782}
   BulletEffect: {fileID: 0}
   BulletTrailPrefab: {fileID: 5334702245796737060, guid: 599ca132c0c33854197ce6d05713537d, type: 3}
+  _weaponOffset: {x: 0.52, y: -0.18, z: 0.48}
 --- !u!1 &8697376042896812220
 GameObject:
   m_ObjectHideFlags: 0
@@ -70,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1210345281655121782}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FirePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,9 +101,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5786992414049797450}
     m_Modifications:
+    - target: {fileID: 1037364941806140, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1084941716384774, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1127237710032744, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1257527702810144, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1590483450198064, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
       propertyPath: m_Name
       value: SM_Wep_SMG_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1590483450198064, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4677473096800348, guid: abb3352eb209cf54e81d4228e91d2edd, type: 3}
       propertyPath: m_LocalPosition.x

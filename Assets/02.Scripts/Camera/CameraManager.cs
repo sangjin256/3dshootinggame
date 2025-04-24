@@ -6,10 +6,11 @@ public class CameraManager : BehaviourSingleton<CameraManager>
 {
     public Transform FPSTarget;
     public Transform TPSTarget;
+    public Transform QuaterViewTarget;
 
     public FPSCamera FPSCamera;
     public TPSCamera TPSCamera;
-    public QuaterViewCamera QVCamera;
+    public QuarterViewCamera QVCamera;
 
     private Vector3 originalPosition;
     public Vector3 ShakePosition;

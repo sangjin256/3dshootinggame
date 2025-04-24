@@ -27,16 +27,16 @@ public class UI_Weapon : MonoBehaviour
 
     public void RefreshGrenade()
     {
-        int bombCount = PlayerController.PlayerFire.BombCount;
-        int maxBombCount = PlayerController.PlayerFire.MaxBombCount;
+        int bombCount = PlayerController.GetBombCount();
+        int maxBombCount = PlayerController.GetMaxBombCount();
 
         GrenadeText.text = $"{bombCount}/{maxBombCount}";
     }
 
     public void RefreshBullet()
     {
-        MaxBulletText.text = $"{PlayerController.PlayerFire.CurrentFirearm.MaxAmmo}";
-        CurrentBulletText.text = $"{PlayerController.PlayerFire.CurrentFirearm.CurrentAmmo}/";
+        MaxBulletText.text = $"{PlayerController.GetMaxAmmo()}";
+        CurrentBulletText.text = $"{PlayerController.GetAmmo()}/";
     }
 
     public void OnReload(bool isReloading)

@@ -78,11 +78,10 @@ public class PlayerMove : APlayerComponent
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (_controller.IsExhausted == false)
+            if (!_controller.IsExhausted)
             {
                 _moveSpeed = 12f;
                 _controller.UseStamina(12f * Time.deltaTime);
-
                 _controller.IsUsingStamina = true;
             }
             else
@@ -119,7 +118,7 @@ public class PlayerMove : APlayerComponent
 
         if (!_isRolling && Input.GetKeyDown(KeyCode.E))
         {
-            if (_controller.IsExhausted == false)
+            if (!_controller.IsExhausted)
             {
                 _isRolling = true;
                 _direction = Vector3.forward;
@@ -133,7 +132,7 @@ public class PlayerMove : APlayerComponent
     {
         if (((int)_characterController.collisionFlags & (int)CollisionFlags.Sides) != 0)
         {
-            if (_controller.IsExhausted == false)
+            if (!_controller.IsExhausted)
             {
                 _yVelocity = 0;
                 _isClimbing = true;

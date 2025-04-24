@@ -4,16 +4,13 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class FollowEnemy : Enemy
 {
-    private void Start()
+    protected override void InitializeEnemy()
     {
-        _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = MoveSpeed;
+        base.InitializeEnemy();
         CurrentState = EnemyState.Trace;
-        _characterController = GetComponent<CharacterController>();
-        _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    private void Update()
+    protected override void Update()
     {
         switch (CurrentState)
         {
@@ -68,5 +65,16 @@ public class FollowEnemy : Enemy
             Debug.Log("플레이어 공격!");
             _attackElapsedTime = 0f;
         }
+    }
+
+    // FollowEnemy는 순찰하지 않으므로 빈 구현
+    protected override Vector3 GetPatrolPosition()
+    {
+        return Vector3.zero;
+    }
+
+    protected override int GetPatrolPositionsCount()
+    {
+        return 0;
     }
 }

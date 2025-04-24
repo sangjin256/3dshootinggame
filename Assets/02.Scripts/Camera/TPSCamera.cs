@@ -11,6 +11,11 @@ public class TPSCamera : MonoBehaviour
 
     [SerializeField] private float _distance = 5;
 
+    public void Initialize()
+    {
+        // TPS카메라는 이전 카메라의 방향 정보를 가져와서 그 방향을 가리키고 시작해야됨
+    }
+
     private void Update()
     {
         RotateHorizontal();

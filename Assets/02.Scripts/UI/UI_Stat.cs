@@ -22,12 +22,22 @@ public class UI_Stat : MonoBehaviour
 
     public void RefreshStaminaUI(float stamina)
     {
-        StaminaSlider.value = PlayerController.Stat.Stamina / PlayerController.Stat.MaxStamina;
-        if(stamina <= 0.01f) StaminaBGImage.DOFade(0.2f, 0.7f).SetLoops(4, LoopType.Restart).OnComplete(() => StaminaBGImage.color = OriginBGColor);
+        float currentStamina = PlayerController.GetStamina();
+        float maxStamina = PlayerController.GetMaxStamina();
+        StaminaSlider.value = currentStamina / maxStamina;
+        
+        if(stamina <= 0.01f)
+        {
+            StaminaBGImage.DOFade(0.2f, 0.7f)
+                         .SetLoops(4, LoopType.Restart)
+                         .OnComplete(() => StaminaBGImage.color = OriginBGColor);
+        }
     }
 
     public void RefreshHealthUI(float health)
     {
-        HealthSlider.value = PlayerController.Stat.Health / PlayerController.Stat.MaxHealth;
+        float currentHealth = PlayerController.GetHealth();
+        float maxHealth = PlayerController.GetMaxHealth();
+        HealthSlider.value = currentHealth / maxHealth;
     }
 }

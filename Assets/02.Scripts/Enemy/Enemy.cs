@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 
-public class Enemy : MonoBehaviour, IDamageable, IPoolable
+public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 {
     // 인공지능 : 사람처럼 똑똑하게 행동하는 알고리즘
     // - 반응형 / 계획형 -> 규칙 기반 인공지능 (전통적인 방식)
@@ -25,29 +25,32 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     // 2. 현재 상태를 지정
     public EnemyState CurrentState = EnemyState.Idle;
 
+    [Header("Base Stats")]
+    public int CurrentPatrolIndex = 0;
+    public float IdleCoolTime = 3f;
+    public float IdleElapsedTime = 0f;
+    public float MoveSpeed = 3.3f;
+    public float FindDistance = 5f;
+    public float AttackDistance = 2.5f;
+    public float ReturnDistance = 10f;
+    public float AttackCooltime = 2f;
+    public float _attackElapsedTime = 0f;
+    public int Health = 100;
+    public float DamagedTime = 0.5f;
+    public float DeathTime = 2f;
+
     protected GameObject _player;
     protected CharacterController _characterController;
     protected NavMeshAgent _agent;
-
-    private Vector3 _startPosition;
-    private Vector3[] PatrolPositionArr = { new Vector3(-11, 1.08f, 2), new Vector3(-11, 1.08f, 18), new Vector3(6, 1.08f, 18), new Vector3(6, 1.08f, 2)};
+    protected Vector3 _startPosition;
     protected GameObjectPool<Enemy> _thisPool;
 
-    public int CurrentPatrolIndex           = 0;
-    public float IdleCoolTime               = 3f;
-    public float IdleElapsedTime            = 0f;
-    public float MoveSpeed                  = 3.3f;
-    public float FindDistance               = 5f;
-    public float AttackDistance             = 2.5f;
-    public float ReturnDistance             = 10f;
-    public float AttackCooltime             = 2f;
-    public float _attackElapsedTime        = 0f;
-    public int Health                       = 100;
-    public float DamagedTime                = 0.5f;
-    public float DeathTime                  = 2f;
+    protected virtual void Start()
+    {
+        InitializeEnemy();
+    }
 
-
-    private void Start()
+    protected virtual void InitializeEnemy()
     {
         _startPosition = transform.position;
         _agent = GetComponent<NavMeshAgent>();
@@ -57,7 +60,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
         _player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         switch (CurrentState)
         {
@@ -89,7 +92,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
         }
     }
 
-    public void TakeDamage(Damage damage)
+    public virtual void TakeDamage(Damage damage)
     {
         if (CurrentState == EnemyState.Damaged || CurrentState == EnemyState.Die) return;
 
@@ -111,7 +114,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     }
 
     // 3. 상태 함수들을 구현한다.
-    protected void Idle()
+    protected virtual void Idle()
     {
         if(Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
         {
@@ -130,7 +133,7 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
         }
     }
 
-    protected void Patrol()
+    protected virtual void Patrol()
     {
         if (Vector3.Distance(transform.position, _player.transform.position) < FindDistance)
         {
@@ -139,17 +142,17 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
             return;
         }
 
-        Vector3 dir = (PatrolPositionArr[CurrentPatrolIndex] - transform.position).normalized;
+        Vector3 dir = (GetPatrolPosition() - transform.position).normalized;
         _characterController.Move(dir * MoveSpeed * Time.deltaTime);
 
-        if (Vector3.Distance(transform.position, PatrolPositionArr[CurrentPatrolIndex]) <= 0.1f)
+        if (Vector3.Distance(transform.position, GetPatrolPosition()) <= 0.1f)
         {
             CurrentPatrolIndex++;
-            if (CurrentPatrolIndex >= PatrolPositionArr.Length) CurrentPatrolIndex = 0;
+            if (CurrentPatrolIndex >= GetPatrolPositionsCount()) CurrentPatrolIndex = 0;
         }
     }
 
-    protected void Trace()
+    protected virtual void Trace()
     {
         // 전이 : 공격 범위 만큼 가까워 지면 -> Attack
         if (Vector3.Distance(transform.position, _player.transform.position) <= AttackDistance)
@@ -168,11 +171,10 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
 
         // 행동 : 플레이어를 추적한다.
         Vector3 dir = (_player.transform.position - transform.position).normalized;
-        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
         _agent.SetDestination(_player.transform.position);
     }
 
-    protected void Return()
+    protected virtual void Return()
     {
         // 전이 : 시작 위치와 가까워지면 -> Idle
         if (Vector3.Distance(transform.position, _startPosition) <= _characterController.minMoveDistance)
@@ -190,15 +192,10 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
             return;
         }
 
-
-
-        // 행동 : 시작 위치로 되돌아간다.
-        //Vector3 dir = (_startPosition - transform.position).normalized;
-        //_characterController.Move(dir * MoveSpeed * Time.deltaTime);
         _agent.SetDestination(_startPosition);
     }
 
-    protected void Attack()
+    protected virtual void Attack()
     {
         // 전이 : 공격 범위보다 멀어지면 -> Trace
         if (Vector3.Distance(transform.position, _player.transform.position) >= AttackDistance)
@@ -241,4 +238,8 @@ public class Enemy : MonoBehaviour, IDamageable, IPoolable
     {
         _thisPool?.ReturnToPool(this);
     }
+
+    // 새로 추가된 추상 메서드들
+    protected abstract Vector3 GetPatrolPosition();
+    protected abstract int GetPatrolPositionsCount();
 }

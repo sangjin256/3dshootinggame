@@ -2,10 +2,39 @@ using UnityEngine;
 
 public class SMG : BaseFirearm
 {
+    private Transform _cameraTransform;
+    [SerializeField] private Vector3 _weaponOffset = new Vector3(0.2f, -0.1f, 0.3f); // 적절한 오프셋 값으로 조정
+    private Vector3 _lastCameraPosition;
+    private Quaternion _lastCameraRotation;
+    private float _rotationSmoothSpeed = 15f;  // 회전 속도 조절 값
+
+    private void Start()
+    {
+        _cameraTransform = Camera.main.transform;
+        _lastCameraPosition = _cameraTransform.position;
+        _lastCameraRotation = _cameraTransform.rotation;
+    }
 
     private void LateUpdate()
     {
-        transform.forward = Camera.main.transform.forward;
+        if (CameraManager.I.FPSCamera.enabled)
+        {
+            // FPS 모드일 때는 카메라를 정확히 따라감
+            transform.position = _cameraTransform.position + _cameraTransform.TransformDirection(_weaponOffset);
+            transform.rotation = _cameraTransform.rotation;
+            
+            // 카메라 흔들림 효과 적용
+            transform.position += CameraManager.I.ShakePosition;
+        }
+        else
+        {
+            // TPS 모드일 때는 플레이어의 자식으로서의 위치 유지
+            transform.localPosition = _weaponOffset;
+            transform.forward = _cameraTransform.forward;
+        }
+
+        _lastCameraPosition = _cameraTransform.position;
+        _lastCameraRotation = _cameraTransform.rotation;
     }
 
     public override void HandleFireInput()

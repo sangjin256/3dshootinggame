@@ -5,64 +5,50 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
+    [Header("Data")]
     public PlayerDataSO DataSO;
 
-    public PlayerStat Stat;
-    public PlayerMove PlayerMove;
-    public PlayerRotate PlayerRotate;
-    public PlayerFire PlayerFire;
-
-    public bool IsExhausted = false;
-    public bool IsUsingStamina = false;
+    [Header("Components")]
+    [SerializeField] private PlayerStatus _status;
+    [SerializeField] private PlayerMove _movement;
+    [SerializeField] private PlayerRotate _rotation;
+    [SerializeField] private PlayerFire _combat;
 
     private void Awake()
     {
-        Stat = new PlayerStat(DataSO.MaxHealth, DataSO.MaxStamina);
-
-        PlayerMove.Initialize(this);
-        PlayerRotate.Initialize(this);
-        PlayerFire.Initialize(this);
+        InitializeComponents();
     }
 
-    private void Update()
+    private void InitializeComponents()
     {
-        if (Stat.Stamina < Stat.MaxStamina && !IsUsingStamina) ChargeStamina(15f * Time.deltaTime);
+        _status.Initialize(this);
+        _movement.Initialize(this);
+        _rotation.Initialize(this);
+        _combat.Initialize(this);
     }
 
     public void TakeDamage(Damage damage)
     {
-        Stat.Health -= damage.Value;
-        PlayerEventManager.I.OnHealthChanged?.Invoke(Stat.Health);
-        if (Stat.Health <= 0) Debug.Log("죽었습니다.");
+        _status.TakeDamage(damage.Value);
     }
 
-    public void UseStamina(float amount)
+    // Status 관련 public 속성들
+    public bool IsExhausted => _status.IsExhausted();
+    public bool IsUsingStamina
     {
-        Stat.Stamina -= amount;
-        if (Stat.Stamina <= 0)
-        {
-            Stat.Stamina = 0;
-            if(!IsExhausted) StartCoroutine(Exhausted());
-        }
-        PlayerEventManager.I.OnStaminaChanged?.Invoke(Stat.Stamina);
+        get => _status.IsUsingStamina();
+        set => _status.SetUsingStamina(value);
     }
 
-    public IEnumerator Exhausted()
-    {
-        IsExhausted = true;
-        PlayerEventManager.I.OnStaminaChanged(0);
-        yield return new WaitForSeconds(3f);
-        IsExhausted = false;
-        IsUsingStamina = false;
-    }
+    public void UseStamina(float amount) => _status.UseStamina(amount);
+    public float GetHealth() => _status.GetCurrentHealth();
+    public float GetStamina() => _status.GetCurrentStamina();
 
-    public void ChargeStamina(float amount)
-    {
-        if (!IsExhausted)
-        {
-            Stat.Stamina += amount;
-            if (Stat.Stamina >= Stat.MaxStamina) Stat.Stamina = Stat.MaxStamina;
-            PlayerEventManager.I.OnStaminaChanged?.Invoke(Stat.Stamina);
-        }
-    } 
+    public float GetMaxHealth() => _status.GetMaxHealth();
+    public float GetMaxStamina() => _status.GetMaxStamina();
+
+    public int GetBombCount() => _combat.BombCount;
+    public int GetMaxBombCount() => _combat.MaxBombCount;
+    public int GetAmmo() => _combat.CurrentFirearm.CurrentAmmo;
+    public int GetMaxAmmo() => _combat.CurrentFirearm.MaxAmmo;
 }
