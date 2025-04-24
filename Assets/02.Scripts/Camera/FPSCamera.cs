@@ -22,12 +22,6 @@ public class FPSCamera : MonoBehaviour
         if (CameraManager.I.IsShooting) _rotationY += CameraManager.I.BoundY;
 
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
-    }
-
-    private void LateUpdate()
-    {
         transform.position = CameraManager.I.ShakePosition + CameraManager.I.FPSTarget.position;
     }
-
-
 }

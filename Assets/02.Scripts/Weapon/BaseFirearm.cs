@@ -46,14 +46,15 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable
 
     private IEnumerator ReLoadCoroutine()
     {
+        PlayerEventManager.I.OnReload?.Invoke(true);
 
-        //OnReloading?.Invoke();
         IsReloading = true;
         yield return new WaitForSeconds(2f);
         IsReloading = false;
         CurrentAmmo = MaxAmmo;
-        //OnBulletCountChanged?.Invoke();
-        //StopReloading.Invoke();
+
+        PlayerEventManager.I.OnFire?.Invoke();
+        PlayerEventManager.I.OnReload?.Invoke(false);
     }
 
     protected Vector3 RandomSpreadDirection()

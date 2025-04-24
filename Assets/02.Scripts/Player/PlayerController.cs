@@ -15,9 +15,6 @@ public class PlayerController : MonoBehaviour
     public bool IsExhausted = false;
     public bool IsUsingStamina = false;
 
-    public Action OnStaminaChanged;
-    public Action OnExhauseted;
-
     private void Awake()
     {
         Stat = new PlayerStat(DataSO.MaxHealth, DataSO.MaxStamina);
@@ -40,13 +37,13 @@ public class PlayerController : MonoBehaviour
             Stat.Stamina = 0;
             if(!IsExhausted) StartCoroutine(Exhausted());
         }
-        OnStaminaChanged?.Invoke();
+        PlayerEventManager.I.OnStaminaChanged?.Invoke(Stat.Stamina);
     }
 
     public IEnumerator Exhausted()
     {
         IsExhausted = true;
-        OnExhauseted?.Invoke();
+        PlayerEventManager.I.OnStaminaChanged(0);
         yield return new WaitForSeconds(3f);
         IsExhausted = false;
         IsUsingStamina = false;
@@ -58,7 +55,7 @@ public class PlayerController : MonoBehaviour
         {
             Stat.Stamina += amount;
             if (Stat.Stamina >= Stat.MaxStamina) Stat.Stamina = Stat.MaxStamina;
-            OnStaminaChanged?.Invoke();
+            PlayerEventManager.I.OnStaminaChanged?.Invoke(Stat.Stamina);
         }
     } 
 }

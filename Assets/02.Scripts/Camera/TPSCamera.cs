@@ -9,12 +9,7 @@ public class TPSCamera : MonoBehaviour
     private float _rotationX = 0;
     private float _rotationY = 0;
 
-    [SerializeField] private float _distance = 0;
-
-    private void Start()
-    {
-        _distance = Vector3.Distance(CameraManager.I.TPSTarget.position, CameraManager.I.TPSTarget.parent.position);
-    }
+    [SerializeField] private float _distance = 5;
 
     private void Update()
     {
@@ -22,17 +17,7 @@ public class TPSCamera : MonoBehaviour
         RotateVertical();
 
         transform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
-    }
-
-    private void LateUpdate()
-    {
-        float mouseY = Input.GetAxis("Mouse Y");
-
-        float y = Mathf.Cos(-_rotationY) * _distance;
-        float z = Mathf.Sin(-_rotationY) * _distance;
-
-        
-        transform.position = CameraManager.I.TPSTarget.parent.position + new Vector3(CameraManager.I.TPSTarget.position.x, y, z);
+        transform.position = CameraManager.I.ShakePosition + CameraManager.I.TPSTarget.position - transform.forward * _distance;
     }
 
     public void RotateHorizontal()
@@ -46,6 +31,6 @@ public class TPSCamera : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y");
 
         _rotationY += mouseY * VerticalSpeed * Time.deltaTime;
-        _rotationY = Mathf.Clamp(_rotationY, -70f, 70f);
+        _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
     }
 }

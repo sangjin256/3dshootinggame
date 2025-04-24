@@ -9,6 +9,7 @@ public class CameraManager : BehaviourSingleton<CameraManager>
 
     public FPSCamera FPSCamera;
     public TPSCamera TPSCamera;
+    public QuaterViewCamera QVCamera;
 
     private Vector3 originalPosition;
     public Vector3 ShakePosition;
@@ -19,6 +20,28 @@ public class CameraManager : BehaviourSingleton<CameraManager>
     private void Awake()
     {
         Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            FPSCamera.enabled = true;
+            TPSCamera.enabled = false;
+            QVCamera.enabled = false;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            FPSCamera.enabled = false;
+            TPSCamera.enabled = true;
+            QVCamera.enabled = false;
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            FPSCamera.enabled = false;
+            TPSCamera.enabled = false;
+            QVCamera.enabled = true;
+        }
     }
 
     public void Shake(float duration, float magnitude)

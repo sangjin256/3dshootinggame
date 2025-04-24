@@ -20,10 +20,9 @@ public class UI_Weapon : MonoBehaviour
 
     private void Start()
     {
-        PlayerController.PlayerFire.OnGrenadeChanged += RefreshGrenade;
-        PlayerController.PlayerFire.OnBulletCountChanged += RefreshBullet;
-        PlayerController.PlayerFire.OnReloading += OnReLoading;
-        PlayerController.PlayerFire.StopReloading += StopReLoading;
+        PlayerEventManager.I.OnThrow += RefreshGrenade;
+        PlayerEventManager.I.OnFire += RefreshBullet;
+        PlayerEventManager.I.OnReload += OnReload;
     }
 
     public void RefreshGrenade()
@@ -36,20 +35,22 @@ public class UI_Weapon : MonoBehaviour
 
     public void RefreshBullet()
     {
-        MaxBulletText.text = $"{PlayerController.PlayerFire.MaxBulletCount}";
-        CurrentBulletText.text = $"{PlayerController.PlayerFire.BulletCount}/";
+        MaxBulletText.text = $"{PlayerController.PlayerFire.CurrentFirearm.MaxAmmo}";
+        CurrentBulletText.text = $"{PlayerController.PlayerFire.CurrentFirearm.CurrentAmmo}/";
     }
 
-    public void OnReLoading()
+    public void OnReload(bool isReloading)
     {
-        ReloadingTextObject.SetActive(true);
-        ReloadingTween = BulletCanvasGroup.DOFade(0f, 0.5f).SetLoops(4, LoopType.Yoyo);
-    }
-
-    public void StopReLoading()
-    {
-        ReloadingTween.Kill();
-        BulletCanvasGroup.alpha = 1.0f;
-        ReloadingTextObject.SetActive(false);
+        if (isReloading)
+        {
+            ReloadingTextObject.SetActive(true);
+            ReloadingTween = BulletCanvasGroup.DOFade(0f, 0.5f).SetLoops(4, LoopType.Yoyo);
+        }
+        else
+        {
+            ReloadingTween?.Kill();
+            BulletCanvasGroup.alpha = 1.0f;
+            ReloadingTextObject.SetActive(false);
+        }
     }
 }

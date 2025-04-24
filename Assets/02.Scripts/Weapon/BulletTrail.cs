@@ -5,9 +5,16 @@ public class BulletTrail : MonoBehaviour, IPoolable
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
     private float _progress = 0f;
+    private ParticleSystem TrailParticle;
 
     private float _speed = 40f;
     private GameObjectPool<BulletTrail> _thisPool;
+
+    private void Awake()
+    {
+        TrailParticle = GetComponent<ParticleSystem>();
+        TrailParticle.Stop();
+    }
 
     public void Initialize(Vector3 startPosition, Vector3 targetPosition)
     {
@@ -15,6 +22,7 @@ public class BulletTrail : MonoBehaviour, IPoolable
         _targetPosition = targetPosition;
         _progress = 0f;
         transform.position = _startPosition;
+        TrailParticle.Play();
     }
 
     // Update is called once per frame
@@ -26,6 +34,7 @@ public class BulletTrail : MonoBehaviour, IPoolable
         {
             _progress = 0f;
             transform.position = _startPosition;
+            TrailParticle.Stop();
             ReturnToPool();
         }
     }
