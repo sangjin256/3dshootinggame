@@ -69,8 +69,11 @@ public class PlayerFire : APlayerComponent
 
     private void Update()
     {
-        FireBomb();
-        CurrentFirearm.HandleFireInput();
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            FireBomb();
+            CurrentFirearm.HandleFireInput();
+        }
     }
 
     private void FireBomb()

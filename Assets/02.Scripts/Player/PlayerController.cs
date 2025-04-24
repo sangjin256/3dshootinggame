@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEditor.Build;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IDamageable
 {
     public PlayerDataSO DataSO;
 
@@ -27,6 +27,13 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (Stat.Stamina < Stat.MaxStamina && !IsUsingStamina) ChargeStamina(15f * Time.deltaTime);
+    }
+
+    public void TakeDamage(Damage damage)
+    {
+        Stat.Health -= damage.Value;
+        PlayerEventManager.I.OnHealthChanged?.Invoke(Stat.Health);
+        if (Stat.Health <= 0) Debug.Log("죽었습니다.");
     }
 
     public void UseStamina(float amount)

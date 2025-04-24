@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class SMG : BaseFirearm
 {
+
+    private void LateUpdate()
+    {
+        transform.forward = Camera.main.transform.forward;
+    }
+
     public override void HandleFireInput()
     {
         if (Input.GetMouseButton(0)) Fire();
@@ -32,15 +38,15 @@ public class SMG : BaseFirearm
                     CurrentAmmo--;
                     PlayerEventManager.I.OnFire?.Invoke();
                     OnHitEffect(hitInfo, 0.1f);
-                    if (hitInfo.collider.gameObject.CompareTag("Enemy"))
+                    if (hitInfo.collider.GetComponent<IDamageable>() != null)
                     {
-                        Enemy enemy = hitInfo.collider.GetComponent<Enemy>();
+                        IDamageable target = hitInfo.collider.GetComponent<IDamageable>();
                         Damage damage = new Damage();
                         damage.Value = DamageAmount;
                         damage.From = this.gameObject;
 
-                        enemy.TakeDamage(damage);
-                        Knockback(enemy, finalDireciton);
+                        target.TakeDamage(damage);
+                        Knockback(hitInfo.collider.gameObject, finalDireciton);
                     }
                 }
                 else

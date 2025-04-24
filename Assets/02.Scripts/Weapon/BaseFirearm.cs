@@ -77,12 +77,16 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable
         trail.Initialize(FirePosition.position, hitInfo.point);
     }
 
-    public void Knockback(Enemy target, Vector3 dir)
+    public void Knockback(GameObject target, Vector3 dir)
     {
-        StartCoroutine(Knockback_Coroutine(target.GetComponent<CharacterController>(), dir));
+        if(target.GetComponent<CharacterController>() == null)
+        {
+            target.GetComponent<Rigidbody>().AddForce(dir * KnockbackPower);
+        }
+        else StartCoroutine(Knockback_Coroutine_with_Controller(target.GetComponent<CharacterController>(), dir));
     }
 
-    public IEnumerator Knockback_Coroutine(CharacterController targetController, Vector3 direction)
+    public IEnumerator Knockback_Coroutine_with_Controller(CharacterController targetController, Vector3 direction)
     {
         KnockbackElapsedTime = 0f;
 
@@ -93,5 +97,4 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable
             yield return null;
         }
     }
-
 }
