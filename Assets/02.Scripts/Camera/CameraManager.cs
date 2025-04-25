@@ -1,3 +1,4 @@
+using DG.Tweening;
 using NUnit;
 using System.Collections;
 using UnityEngine;
@@ -11,37 +12,59 @@ public class CameraManager : BehaviourSingleton<CameraManager>
     public FPSCamera FPSCamera;
     public TPSCamera TPSCamera;
     public QuarterViewCamera QVCamera;
+    private Transform _player;
 
     private Vector3 originalPosition;
     public Vector3 ShakePosition;
     public float BoundY = 0.2f;
 
+    public float RotationX;
+    public float RotationY;
+
+    public float HorizontalSpeed = 150f;
+    public float VerticalSpeed = 150f;
     public bool IsShooting = false;
+
+    public float TransitionDuration;
 
     private void Awake()
     {
-        Transform player = GameObject.FindGameObjectWithTag("Player").transform;
+        _player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void Update()
     {
+        RotateHorizontal();
+        RotateVertical();
+
         if (Input.GetKeyDown(KeyCode.Alpha8))
         {
-            FPSCamera.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            if (FPSCamera.enabled == true) return;
             TPSCamera.enabled = false;
             QVCamera.enabled = false;
+
+            transform.DORotate(_player.transform.eulerAngles, TransitionDuration);
+            transform.DOMove(FPSCamera.GetPosition(), TransitionDuration).OnComplete(() => FPSCamera.enabled = true);
         }
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            if (TPSCamera.enabled == true) return;
             FPSCamera.enabled = false;
-            TPSCamera.enabled = true;
             QVCamera.enabled = false;
+            
+            transform.DORotate(_player.transform.eulerAngles, TransitionDuration);
+            transform.DOMove(TPSCamera.GetPosition(), TransitionDuration).OnComplete(() => TPSCamera.enabled = true);
         }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
+            Cursor.lockState = CursorLockMode.None;
+            if (QVCamera.enabled == true) return;
             FPSCamera.enabled = false;
             TPSCamera.enabled = false;
-            QVCamera.enabled = true;
+
+            transform.DOMove(QVCamera.GetPosition(), TransitionDuration).OnComplete(() => QVCamera.enabled = true);
         }
     }
 
@@ -70,5 +93,37 @@ public class CameraManager : BehaviourSingleton<CameraManager>
 
         ShakePosition = Vector3.zero;
         transform.localPosition = originalPosition;
+    }
+
+    public void RotateHorizontal()
+    {
+        float mouseX = Input.GetAxis("Mouse X");
+        RotationX += mouseX * HorizontalSpeed * Time.deltaTime;
+    }
+
+    public void RotateVertical()
+    {
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        RotationY += mouseY * VerticalSpeed * Time.deltaTime;
+        RotationY = Mathf.Clamp(RotationY, -90f, 90f);
+    }
+
+    public Vector3 GetFireDirection()
+    {
+        if (FPSCamera.enabled)
+        {
+
+        }
+        else if (TPSCamera.enabled)
+        {
+
+        }
+        else
+        {
+
+        }
+
+        return Vector3.zero;
     }
 }

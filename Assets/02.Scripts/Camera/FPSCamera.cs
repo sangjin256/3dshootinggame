@@ -1,27 +1,18 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FPSCamera : MonoBehaviour
 {
-    public float RotationSpeed = 150f;
-
-    // 카메라 각도는 0도에서부터 시작한다고 기준을 세운다.
-    private float _rotationX = 0;
-    private float _rotationY = 0;
-
-    private void Update()
+    public Vector3 GetPosition()
     {
-        // 1. 마우스 입력을 받는다. (마우스 커서의 움직임 방향)
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        transform.eulerAngles = new Vector3(-CameraManager.I.RotationY, CameraManager.I.RotationX, 0);
+        return CameraManager.I.ShakePosition + CameraManager.I.FPSTarget.position;
+    }
 
-        // 2. 마우스 입력으로부터 회전시킬 방향을 만든다.
-        _rotationX += mouseX * RotationSpeed * Time.deltaTime;
-        _rotationY += mouseY * RotationSpeed * Time.deltaTime;
-        _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
+    private void LateUpdate()
+    {
+        if (CameraManager.I.IsShooting) CameraManager.I.RotationY += CameraManager.I.BoundY;
 
-        if (CameraManager.I.IsShooting) _rotationY += CameraManager.I.BoundY;
-
-        transform.eulerAngles = new Vector3(-_rotationY, _rotationX, 0);
-        transform.position = CameraManager.I.ShakePosition + CameraManager.I.FPSTarget.position;
+        transform.position = GetPosition();
     }
 }

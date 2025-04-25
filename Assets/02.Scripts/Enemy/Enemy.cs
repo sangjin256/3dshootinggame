@@ -36,6 +36,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
     public float AttackCooltime = 2f;
     public float _attackElapsedTime = 0f;
     public int Health = 100;
+    public int MaxHealth = 100;
     public float DamagedTime = 0.5f;
     public float DeathTime = 2f;
 
@@ -44,6 +45,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
     protected NavMeshAgent _agent;
     protected Vector3 _startPosition;
     protected GameObjectPool<Enemy> _thisPool;
+
+    public Action OnHealthChanged;
 
     protected virtual void Start()
     {
@@ -94,10 +97,10 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 
     public virtual void TakeDamage(Damage damage)
     {
-        if (CurrentState == EnemyState.Damaged || CurrentState == EnemyState.Die) return;
+        if (CurrentState == EnemyState.Die) return;
 
         Health -= damage.Value;
-
+        OnHealthChanged?.Invoke();
         if(Health <= 0)
         {
             CurrentState = EnemyState.Die;
@@ -209,7 +212,10 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
         _attackElapsedTime += Time.deltaTime;
         if(_attackElapsedTime >= AttackCooltime)
         {
-            Debug.Log("플레이어 공격!");
+            Damage damage = new Damage();
+            damage.Value = 10;
+            damage.From = this.gameObject;
+            _player.GetComponent<PlayerController>().TakeDamage(damage);
             _attackElapsedTime = 0f;
         }
     }

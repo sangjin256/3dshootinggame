@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class BaseFirearm : MonoBehaviour, IFireable
+public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
 {
     public int MaxAmmo;
     public int CurrentAmmo;
@@ -30,9 +30,20 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable
         BulletTrailPool = new GameObjectPool<BulletTrail>(BulletTrailPrefab, MaxAmmo / 2);
     }
 
-    public virtual void HandleFireInput() { }
+    public virtual void HandleInput()
+    {
+        if (Input.GetMouseButton(0)) Fire();
+        if (Input.GetMouseButtonUp(0))
+        {
+            FireElapsedTime = FireCoolTime;
+            SpreadElapsedTime = 0f;
+            CameraManager.I.IsShooting = false;
+        }
 
-    public virtual void Fire() { }
+        if (Input.GetKeyDown(KeyCode.R)) Reload();
+    }
+
+    public abstract void Fire();
 
     public virtual void Reload()
     {
@@ -60,7 +71,7 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable
     protected Vector3 RandomSpreadDirection()
     {
         Vector2 randomPosition = Random.insideUnitCircle * ((SpreadCoolTime - SpreadElapsedTime) / SpreadCoolTime) * SpreadAmount;
-        Vector3 finalDireciton = transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0);
+        Vector3 finalDireciton = (CameraManager.I.transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0)).normalized;
 
         return finalDireciton;
     }

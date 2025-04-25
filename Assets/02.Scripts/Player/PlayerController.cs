@@ -5,14 +5,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, IDamageable
 {
-    [Header("Data")]
     public PlayerDataSO DataSO;
 
-    [Header("Components")]
     [SerializeField] private PlayerStatus _status;
     [SerializeField] private PlayerMove _movement;
     [SerializeField] private PlayerRotate _rotation;
-    [SerializeField] private PlayerFire _combat;
+    [SerializeField] private PlayerCombat _combat;
 
     private void Awake()
     {
@@ -32,7 +30,6 @@ public class PlayerController : MonoBehaviour, IDamageable
         _status.TakeDamage(damage.Value);
     }
 
-    // Status 관련 public 속성들
     public bool IsExhausted => _status.IsExhausted();
     public bool IsUsingStamina
     {
@@ -49,6 +46,22 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     public int GetBombCount() => _combat.BombCount;
     public int GetMaxBombCount() => _combat.MaxBombCount;
-    public int GetAmmo() => _combat.CurrentFirearm.CurrentAmmo;
-    public int GetMaxAmmo() => _combat.CurrentFirearm.MaxAmmo;
+    public int GetAmmo()
+    {
+        if(_combat.CurrentWeapon as IFireable != null)
+        {
+            BaseFirearm fireable = _combat.CurrentWeapon as BaseFirearm;
+            return fireable.CurrentAmmo;
+        }
+        return 0;
+    }
+    public int GetMaxAmmo()
+    {
+        if (_combat.CurrentWeapon as IFireable != null)
+        {
+            BaseFirearm fireable = _combat.CurrentWeapon as BaseFirearm;
+            return fireable.MaxAmmo;
+        }
+        return 0;
+    }
 }

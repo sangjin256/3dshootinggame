@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class Barrel : MonoBehaviour, IDamageable
 {
-    public int health = 100;
-    public int Damage = 30;
+    public int health = 30;
+    public int Damage = 60;
 
     public LayerMask LayerMask;
     public GameObject ExplosionEffect;
@@ -13,11 +13,6 @@ public class Barrel : MonoBehaviour, IDamageable
     public float DestroyTime;
     public float ForceAmount;
 
-    private void Start()
-    {
-        LayerMask = (1 << LayerMask.NameToLayer("Player"));
-        LayerMask += (1 << LayerMask.NameToLayer("Enemy"));
-    }
 
     public void TakeDamage(Damage damage)
     {

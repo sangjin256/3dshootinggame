@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2264834436937812126}
   - component: {fileID: 4441017963152498539}
   - component: {fileID: 4296797209826763102}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,12 +128,12 @@ MonoBehaviour:
   Damage: 30
   LayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1160
   ExplosionEffect: {fileID: 100010, guid: e0609132424a24844b1d53ad3d704fd9, type: 3}
   Rigidbody: {fileID: 4296797209826763102}
   OverlapRadius: 5
   DestroyTime: 5
-  ForceAmount: 200
+  ForceAmount: 10
 --- !u!54 &4296797209826763102
 Rigidbody:
   m_ObjectHideFlags: 0

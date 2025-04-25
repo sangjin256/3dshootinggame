@@ -52,14 +52,14 @@ public class PlayerMove : APlayerComponent
             _direction.y = _yVelocity;
         }
 
-        _direction = transform.TransformDirection(_direction);
+        if (!CameraManager.I.QVCamera.enabled || _isRolling) _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
 
         if((_characterController.collisionFlags & CollisionFlags.Below) != 0)
         {
             _jumpCount = 0;
             _yVelocity = 0f;
-        }
+        } 
     }
 
     public void Jump()
@@ -121,7 +121,7 @@ public class PlayerMove : APlayerComponent
             if (!_controller.IsExhausted)
             {
                 _isRolling = true;
-                _direction = Vector3.forward;
+                _direction = transform.forward;
                 _moveSpeed = _rollSpeed;
                 _controller.UseStamina(20f);
             }

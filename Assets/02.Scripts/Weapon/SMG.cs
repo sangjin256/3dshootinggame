@@ -19,35 +19,25 @@ public class SMG : BaseFirearm
     {
         if (CameraManager.I.FPSCamera.enabled)
         {
-            // FPS 모드일 때는 카메라를 정확히 따라감
             transform.position = _cameraTransform.position + _cameraTransform.TransformDirection(_weaponOffset);
             transform.rotation = _cameraTransform.rotation;
             
-            // 카메라 흔들림 효과 적용
             transform.position += CameraManager.I.ShakePosition;
+        }
+        else if(CameraManager.I.TPSCamera.enabled)
+        {
+            transform.localPosition = _weaponOffset;
+            transform.forward = _cameraTransform.forward;
         }
         else
         {
-            // TPS 모드일 때는 플레이어의 자식으로서의 위치 유지
-            transform.localPosition = _weaponOffset;
-            transform.forward = _cameraTransform.forward;
+            Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+            mouseDirection = mouseDirection.normalized;
+            transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
         }
 
         _lastCameraPosition = _cameraTransform.position;
         _lastCameraRotation = _cameraTransform.rotation;
-    }
-
-    public override void HandleFireInput()
-    {
-        if (Input.GetMouseButton(0)) Fire();
-        if (Input.GetMouseButtonUp(0))
-        {
-            FireElapsedTime = FireCoolTime;
-            SpreadElapsedTime = 0f;
-            CameraManager.I.IsShooting = false;
-        }
-
-        if (Input.GetKeyDown(KeyCode.R)) Reload();
     }
 
     public override void Fire()
@@ -58,7 +48,15 @@ public class SMG : BaseFirearm
             if (FireElapsedTime >= FireCoolTime)
             {
                 Vector3 finalDireciton = RandomSpreadDirection();
-                Ray ray = new Ray(FirePosition.position, finalDireciton);
+                Ray ray = new Ray(CameraManager.I.transform.position, finalDireciton);
+
+                if (CameraManager.I.QVCamera.enabled)
+                {
+                    Vector2 randomPosition = Random.insideUnitCircle * ((SpreadCoolTime - SpreadElapsedTime) / SpreadCoolTime) * SpreadAmount;
+                    finalDireciton = (FirePosition.forward + new Vector3(randomPosition.x, randomPosition.y, 0)).normalized;
+                    ray = new Ray(FirePosition.position, finalDireciton);
+                }
+
                 RaycastHit hitInfo = new RaycastHit();
 
                 bool isHit = Physics.Raycast(ray, out hitInfo, 50f);
@@ -84,7 +82,7 @@ public class SMG : BaseFirearm
                     PlayerEventManager.I.OnFire?.Invoke();
                     CameraManager.I.Shake(0.1f, 0.1f);
                     BulletTrail trail = BulletTrailPool.Get();
-                    trail.Initialize(FirePosition.transform.position, FirePosition.transform.position + finalDireciton.normalized * 30f);
+                    trail.Initialize(FirePosition.position, FirePosition.position + finalDireciton.normalized * 30f);
                 }
 
                 FireElapsedTime = 0;

@@ -36,7 +36,7 @@ public class PlayerStatus : MonoBehaviour
 
         if (_stats.Health <= 0)
         {
-            Debug.Log("죽었습니다.");
+            GameManager.I.GameOver();
         }
     }
 

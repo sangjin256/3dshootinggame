@@ -1,16 +1,10 @@
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class PlayerFire : APlayerComponent
+public class PlayerCombat : APlayerComponent
 {
-    // 필요 속성
-    // - 발사 위치
-    public GameObject FirePosition;
+    public Transform MeleeAttackPosition;
     // - 폭탄 프리펩
     public GameObject BombPrefab;
     // - 던지는 힘
@@ -28,7 +22,8 @@ public class PlayerFire : APlayerComponent
 
     private List<GameObject> BombPoolList;
 
-    public BaseFirearm CurrentFirearm;
+    public List<GameObject> OwnWeaponList;
+    public IWeapon CurrentWeapon;
 
     private void Start()
     {
@@ -69,10 +64,31 @@ public class PlayerFire : APlayerComponent
 
     private void Update()
     {
-        if (Cursor.lockState == CursorLockMode.Locked)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            OwnWeaponList[0].SetActive(true);
+            OwnWeaponList[1].SetActive(false);
+            CurrentWeapon = OwnWeaponList[0].GetComponent<IWeapon>();
+            
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            OwnWeaponList[0].SetActive(false);
+            OwnWeaponList[1].SetActive(true);
+            CurrentWeapon = OwnWeaponList[1].GetComponent<IWeapon>();
+        }
+
+        if (!EventSystem.current.IsPointerOverGameObject() && !CameraManager.I.QVCamera.enabled)
         {
             FireBomb();
-            CurrentFirearm.HandleFireInput();
+            CurrentWeapon.HandleInput();
+        }
+
+        if (CameraManager.I.QVCamera.enabled)
+        {
+            FireBomb();
+            CurrentWeapon.HandleInput();
         }
     }
 
@@ -99,7 +115,7 @@ public class PlayerFire : APlayerComponent
             if (IsBombLeft())
             {
                 GameObject bomb = GetBombInPool();
-                bomb.transform.position = FirePosition.transform.position;
+                //bomb.transform.position = FirePosition.transform.position;
 
                 // 4. 생성된 수류탄을 카메라 방향으로 물리적인 힘 가하기
                 Rigidbody bombRigidbody = bomb.GetComponent<Rigidbody>();

@@ -4,15 +4,20 @@ public class PlayerRotate : APlayerComponent
 {
     public float RotationSpeed = 150f; // 카메라와 회전속도가 똑같아야 한다.
     private float _rotationX = 0;
+    public LayerMask GroundLayer;
 
     private void Update()
     {
-        // 1. 마우스 입력을 받는다. (마우스 커서의 움직임 방향)
-        float mouseX = Input.GetAxis("Mouse X");
-
-        // 2. 마우스 입력으로부터 회전시킬 방향을 만든다.
-        _rotationX += mouseX * RotationSpeed * Time.deltaTime;
-
-        transform.eulerAngles = new Vector3(0, _rotationX, 0);
+        if (CameraManager.I.QVCamera.enabled)
+        {
+            Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+            mouseDirection = mouseDirection.normalized;
+            transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
+        }
+        else
+        {
+            transform.eulerAngles = new Vector3(0, CameraManager.I.RotationX, 0);
+        }
+            
     }
 }
