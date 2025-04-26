@@ -3,41 +3,11 @@ using UnityEngine;
 public class SMG : BaseFirearm
 {
     private Transform _cameraTransform;
-    [SerializeField] private Vector3 _weaponOffset = new Vector3(0.2f, -0.1f, 0.3f); // 적절한 오프셋 값으로 조정
-    private Vector3 _lastCameraPosition;
-    private Quaternion _lastCameraRotation;
-    private float _rotationSmoothSpeed = 15f;  // 회전 속도 조절 값
+    
 
     private void Start()
     {
         _cameraTransform = Camera.main.transform;
-        _lastCameraPosition = _cameraTransform.position;
-        _lastCameraRotation = _cameraTransform.rotation;
-    }
-
-    private void LateUpdate()
-    {
-        if (CameraManager.I.FPSCamera.enabled)
-        {
-            transform.position = _cameraTransform.position + _cameraTransform.TransformDirection(_weaponOffset);
-            transform.rotation = _cameraTransform.rotation;
-            
-            transform.position += CameraManager.I.ShakePosition;
-        }
-        else if(CameraManager.I.TPSCamera.enabled)
-        {
-            transform.localPosition = _weaponOffset;
-            transform.forward = _cameraTransform.forward;
-        }
-        else
-        {
-            Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
-            mouseDirection = mouseDirection.normalized;
-            transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
-        }
-
-        _lastCameraPosition = _cameraTransform.position;
-        _lastCameraRotation = _cameraTransform.rotation;
     }
 
     public override void Fire()
@@ -87,10 +57,6 @@ public class SMG : BaseFirearm
 
                 FireElapsedTime = 0;
             }
-            //else
-            //{
-            //    CameraManager.I.IsShooting = false;
-            //}
 
             SpreadElapsedTime += Time.deltaTime;
             if (SpreadElapsedTime + 0.5f >= SpreadCoolTime)

@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class PlayerRotate : APlayerComponent
 {
-    public float RotationSpeed = 150f; // 카메라와 회전속도가 똑같아야 한다.
-    private float _rotationX = 0;
-    public LayerMask GroundLayer;
-
     private void Update()
     {
         if (CameraManager.I.QVCamera.enabled)

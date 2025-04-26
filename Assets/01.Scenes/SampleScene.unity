@@ -756,7 +756,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 767
+    m_Bits: 1791
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -5840,6 +5840,22 @@ PrefabInstance:
       propertyPath: 'OwnWeaponList.Array.data[1]'
       value: 
       objectReference: {fileID: 1749681614}
+    - target: {fileID: 7478803171869113965, guid: 44ee87ea613d0124e85f3e8ef98fb42d, type: 3}
+      propertyPath: AttackCooltime
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478803171869113965, guid: 44ee87ea613d0124e85f3e8ef98fb42d, type: 3}
+      propertyPath: _weaponOffset.x
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478803171869113965, guid: 44ee87ea613d0124e85f3e8ef98fb42d, type: 3}
+      propertyPath: _weaponOffset.y
+      value: -0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478803171869113965, guid: 44ee87ea613d0124e85f3e8ef98fb42d, type: 3}
+      propertyPath: _weaponOffset.z
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

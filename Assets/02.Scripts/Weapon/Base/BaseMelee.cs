@@ -7,22 +7,75 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     public int Damage;
     public float HorizontalAngle;
     public float Range;
-    public float VerticalRange;
-    public LayerMask LayerMask;
-
     private float _rangeCosValue;
+    public float VerticalRange;
+    public float AttackCooltime;
+    private float _attackElapsedtime = 0;
+    protected bool _isAnimation = false;
+
+    public LayerMask LayerMask;
+    public Vector3 _weaponOffset;
 
     public Transform AttackPoint;
 
-    public virtual void Start()
+    public virtual void Awake()
     {
         _rangeCosValue = Mathf.Cos(Range/2);
         PlayerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+    }
+    private void LateUpdate()
+    {
+        PositionByCamera();
+    }
+
+    public virtual void HandleInput()
+    {
+        _attackElapsedtime += Time.deltaTime;
+        if(_attackElapsedtime >= AttackCooltime)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Attack();
+                _attackElapsedtime = 0;
+            }
+            else
+            {
+                // 가만히있을때 숫자 계속 커지는거 방지
+                _attackElapsedtime = AttackCooltime + 1f;
+            }
+        }
+
+    }
+
+    public virtual void PositionByCamera()
+    {
+
+        if (CameraManager.I.FPSCamera.enabled)
+        {
+            if (_isAnimation) return;
+            transform.position = Camera.main.transform.position + Camera.main.transform.TransformDirection(_weaponOffset);
+            transform.rotation = Camera.main.transform.rotation;
+
+            transform.position += CameraManager.I.ShakePosition;
+        }
+        else if (CameraManager.I.TPSCamera.enabled)
+        {
+            if (!_isAnimation) transform.localPosition = _weaponOffset;
+            transform.forward = Camera.main.transform.forward;
+        }
+        else
+        {
+            Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+            mouseDirection = mouseDirection.normalized;
+            transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
+        }
     }
 
     public virtual void Attack()
     {
         Collider[] colliders = Physics.OverlapSphere(PlayerTransform.position, Range, LayerMask);
+
+        AttackAnimation();
 
         for(int i = 0; i < colliders.Length; i++)
         {
@@ -31,7 +84,6 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
             Vector3 directionToTarget = (targetPosition - AttackPoint.position).normalized;
             Debug.Log(Vector3.Dot(AttackPoint.forward, directionToTarget));
             float cosValue = Vector3.Dot(AttackPoint.forward, directionToTarget);
-            DrawSector(PlayerTransform.position, AttackPoint.forward, Range, HorizontalAngle * 2, 50, Color.red);
             if(cosValue >= _rangeCosValue)
             {
                 if (colliders[i].transform.position.y >= AttackPoint.position.y - VerticalRange && colliders[i].transform.position.y <= AttackPoint.position.y + VerticalRange)
@@ -45,37 +97,5 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
         }
     }
 
-    public virtual void HandleInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Attack();
-        }
-    }
-
-    void DrawSector(Vector3 origin, Vector3 forward, float radius, float angle, int segments, Color color)
-    {
-        // 중심 방향 기준 시작각
-        float halfAngle = angle / 2f;
-        Quaternion startRotation = Quaternion.AngleAxis(-halfAngle, Vector3.up);
-        Vector3 startDir = startRotation * forward.normalized;
-
-        // 각 분할 간격
-        float deltaAngle = angle / segments;
-
-        Vector3 prevPoint = origin + startDir * radius;
-        Debug.DrawLine(origin, prevPoint, color);
-
-        for (int i = 1; i <= segments; i++)
-        {
-            Quaternion rot = Quaternion.AngleAxis(deltaAngle * i - halfAngle, Vector3.up);
-            Vector3 currentDir = rot * forward.normalized;
-            Vector3 currentPoint = origin + currentDir * radius;
-
-            Debug.DrawLine(prevPoint, currentPoint, color); // 외곽 연결
-            Debug.DrawLine(origin, currentPoint, color);    // 중심에서 각 포인트까지
-
-            prevPoint = currentPoint;
-        }
-    }
+    public abstract void AttackAnimation();
 }
