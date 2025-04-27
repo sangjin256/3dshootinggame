@@ -163,8 +163,12 @@ MonoBehaviour:
   _attackElapsedTime: 0
   Health: 100
   MaxHealth: 100
-  DamagedTime: 0.5
+  DamagedTime: 0.1
   DeathTime: 2
+  StartPosition: {x: 0, y: 0, z: 0}
+  agent: {fileID: 0}
+  CharacterController: {fileID: 0}
+  player: {fileID: 0}
   PatrolPositionArr:
   - {x: -11, y: 1.08, z: 2}
   - {x: -11, y: 1.08, z: 18}

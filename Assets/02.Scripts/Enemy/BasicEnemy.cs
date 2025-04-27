@@ -8,13 +8,18 @@ public class BasicEnemy : Enemy
         new Vector3(6, 1.08f, 18), 
         new Vector3(6, 1.08f, 2)
     };
+    protected override void InitializeEnemy()
+    {
+        base.InitializeEnemy();
+        stateMachine.ChangeState(new IdleState());
+    }
 
-    protected override Vector3 GetPatrolPosition()
+    public override Vector3 GetPatrolPosition()
     {
         return PatrolPositionArr[CurrentPatrolIndex];
     }
 
-    protected override int GetPatrolPositionsCount()
+    public override int GetPatrolPositionsCount()
     {
         return PatrolPositionArr.Length;
     }
