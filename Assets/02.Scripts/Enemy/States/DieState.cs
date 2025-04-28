@@ -7,6 +7,7 @@ public class DieState : IState<Enemy>
     {
         enemy.ResetPath();
         _elapsedTime = 0f;
+        enemy.GetAnimator().SetTrigger("Die");
     }
 
     public void Update(Enemy enemy)

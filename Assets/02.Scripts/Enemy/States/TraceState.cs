@@ -4,6 +4,7 @@ public class TraceState : IState<Enemy>
 {
     public void Enter(Enemy enemy)
     {
+        enemy.GetAnimator().SetTrigger("IdleToMove");
     }
 
     public void Update(Enemy enemy)

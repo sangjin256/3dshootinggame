@@ -28,6 +28,7 @@ public class PlayerCombat : APlayerComponent
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        PlayerEventManager.I.OnFire += ShotAnimation;
         _camera = Camera.main;
         InitializeBombPool();
     }
@@ -127,5 +128,10 @@ public class PlayerCombat : APlayerComponent
                 IsCharging = false;
             }
         }
+    }
+
+    public void ShotAnimation()
+    {
+        _controller.Animator.SetTrigger("Shoot");
     }
 }

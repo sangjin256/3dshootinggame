@@ -7,6 +7,7 @@ public class IdleState : IState<Enemy>
     public void Enter(Enemy enemy)
     {
         idleElapsedTime = 0f;
+        enemy.GetAnimator().SetTrigger("MoveToIdle");
     }
 
     public void Update(Enemy enemy)

@@ -39,6 +39,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
     protected GameObjectPool<Enemy> _thisPool;
     protected NavMeshAgent _agent;
     protected CharacterController _characterController;
+    public Animator _animator;
 
     public Action OnHealthChanged;
 
@@ -53,6 +54,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
         stateMachine = new StateMachine<Enemy>(this);
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = MoveSpeed;
+        _animator = GetComponentInChildren<Animator>();
         _characterController = GetComponent<CharacterController>();
     }
 
@@ -106,4 +108,5 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
     public Vector3 GetStartPosition() => _startPosition;
     public void SetIsStopped(bool IsStop) => _agent.isStopped = IsStop;
     public void ResetPath() => _agent.ResetPath();
+    public Animator GetAnimator() => _animator;
 }

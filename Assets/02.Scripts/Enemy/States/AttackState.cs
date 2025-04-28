@@ -6,6 +6,7 @@ public class AttackState : IState<Enemy>
 
     public void Enter(Enemy enemy)
     {
+        enemy.GetAnimator().SetTrigger("MoveToAttackDelay");
         attackElapsedTime = enemy.AttackCooltime;
     }
 
@@ -20,6 +21,7 @@ public class AttackState : IState<Enemy>
         attackElapsedTime += Time.deltaTime;
         if (attackElapsedTime >= enemy.AttackCooltime)
         {
+            enemy.GetAnimator().SetTrigger("AttackDelayToAttack");
             Damage damage = new Damage();
             damage.Value = 10;
             damage.From = enemy.gameObject;
