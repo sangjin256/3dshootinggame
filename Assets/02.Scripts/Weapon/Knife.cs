@@ -19,35 +19,35 @@ public class Knife : BaseMelee
 
         Sequence attackSequence = DOTween.Sequence();
 
-        if (CameraManager.I.FPSCamera.enabled)
-        {
-            _originalWorldPosition = transform.position;
-            attackSequence.Append(transform.DOMove(
-                _originalWorldPosition + transform.TransformDirection(Vector3.left) * _sweepDistance,
+        //if (CameraManager.I.FPSCamera.enabled)
+        //{
+        //    _originalWorldPosition = transform.position;
+        //    attackSequence.Append(transform.DOMove(
+        //        _originalWorldPosition + transform.TransformDirection(Vector3.left) * _sweepDistance,
+        //        _attackDuration / 4
+        //    ).SetEase(Ease.OutQuad));
+
+        //    attackSequence.Append(transform.DOMove(
+        //        _originalWorldPosition + transform.TransformDirection(Vector3.right) * _sweepDistance,
+        //        _attackDuration / 2
+        //    ).SetEase(Ease.InQuad));
+
+        //    attackSequence.Append(transform.DOMove(
+        //        _originalWorldPosition,
+        //        _attackDuration / 4
+        //    ).SetEase(Ease.InQuad));
+        //}
+
+        //else
+        //{
+             _originalLocalPosition = transform.localPosition;
+            attackSequence.Append(transform.DOLocalMove(
+                transform.localPosition + Vector3.left * _sweepDistance,
                 _attackDuration / 4
             ).SetEase(Ease.OutQuad));
 
-            attackSequence.Append(transform.DOMove(
-                _originalWorldPosition + transform.TransformDirection(Vector3.right) * _sweepDistance,
-                _attackDuration / 2
-            ).SetEase(Ease.InQuad));
-
-            attackSequence.Append(transform.DOMove(
-                _originalWorldPosition,
-                _attackDuration / 4
-            ).SetEase(Ease.InQuad));
-        }
-
-        else
-        {
-            transform.localPosition = _originalLocalPosition;
             attackSequence.Append(transform.DOLocalMove(
-                _originalLocalPosition + Vector3.left * _sweepDistance,
-                _attackDuration / 4
-            ).SetEase(Ease.OutQuad));
-
-            attackSequence.Append(transform.DOLocalMove(
-                _originalLocalPosition + Vector3.right * _sweepDistance,
+                transform.localPosition + Vector3.right * _sweepDistance,
                 _attackDuration / 2
             ).SetEase(Ease.InQuad));
 
@@ -55,7 +55,7 @@ public class Knife : BaseMelee
                 _originalLocalPosition,
                 _attackDuration / 4
             ).SetEase(Ease.InQuad));
-        }
+        //}
 
 
 

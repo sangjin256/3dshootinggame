@@ -123,8 +123,11 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
         if(target.GetComponent<CharacterController>() == null)
         {
             target.GetComponent<Rigidbody>().AddForce(dir * KnockbackPower);
+            return;
         }
-        else StartCoroutine(Knockback_Coroutine_with_Controller(target.GetComponent<CharacterController>(), dir));
+        Enemy enemy = target.GetComponent<Enemy>();
+        if (enemy != null && enemy.CurrentState is DieState) return;
+        StartCoroutine(Knockback_Coroutine_with_Controller(target.GetComponent<CharacterController>(), dir));
     }
 
     public IEnumerator Knockback_Coroutine_with_Controller(CharacterController targetController, Vector3 direction)

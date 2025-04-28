@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class AttackState : IState<Enemy>
 {
-    private float attackElapsedTime = 0f;
+    private float attackElapsedTime;
 
     public void Enter(Enemy enemy)
     {
-        attackElapsedTime = 0f;
+        attackElapsedTime = enemy.AttackCooltime;
     }
 
     public void Update(Enemy enemy)

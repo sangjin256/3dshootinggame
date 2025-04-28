@@ -18,27 +18,17 @@ public class FollowEnemy : Enemy
 
     public override void TakeDamage(Damage damage)
     {
-        if (stateMachine.CurrentState is DamagedState) return;
-
+        if (stateMachine.CurrentState is DieState) return;
         Health -= damage.Value;
         OnHealthChanged?.Invoke();
         
         if(Health <= 0)
         {
-            StartCoroutine(Die_Coroutine());
+            ChangeState(new DieState());
             return;
         }
 
-        ChangeState(new DamagedState());
-        StartCoroutine(Damagaed_Coroutine());
-    }
-
-    private IEnumerator Damagaed_Coroutine()
-    {
-        agent.isStopped = true;
-        agent.ResetPath();
-        yield return new WaitForSeconds(DamagedTime);
-        ChangeState(new FollowTraceState());
+        ChangeState(new FollowDamagedState());
     }
 
     public override Vector3 GetPatrolPosition()

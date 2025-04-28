@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DamagedState : IState<Enemy>
+public class FollowDamagedState : IState<Enemy>
 {
     private float _elapsedTime = 0f;
 
@@ -16,7 +16,7 @@ public class DamagedState : IState<Enemy>
         _elapsedTime += Time.deltaTime;
         if (_elapsedTime >= enemy.DamagedTime)
         {
-            enemy.ChangeState(new TraceState());
+            enemy.ChangeState(new FollowTraceState());
         }
     }
 
@@ -24,4 +24,4 @@ public class DamagedState : IState<Enemy>
     {
         enemy.agent.isStopped = false;
     }
-} 
+}

@@ -4,21 +4,19 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;   
 
-public enum EnemyState
-{
-    Idle,
-    Patrol,
-    Trace,
-    Return,
-    Attack,
-    Damaged,
-    Die,
-}
+//public enum EnemyState
+//{
+//    Idle,
+//    Patrol,
+//    Trace,
+//    Return,
+//    Attack,
+//    Damaged,
+//    Die,
+//}
 
 public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 {
-    public EnemyState CurrentState = EnemyState.Idle;
-
     [Header("Base Stats")]
     public int CurrentPatrolIndex = 0;
     public float IdleCoolTime = 3f;
@@ -35,6 +33,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
     public float DeathTime = 2f;
 
     protected StateMachine<Enemy> stateMachine;
+    public IState<Enemy> CurrentState => stateMachine.CurrentState;
 
     public Vector3 StartPosition;
     protected GameObjectPool<Enemy> _thisPool;
@@ -71,27 +70,17 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 
     public virtual void TakeDamage(Damage damage)
     {
-        if (stateMachine.CurrentState is DamagedState) return;
-
+        if (stateMachine.CurrentState is DieState) return;
         Health -= damage.Value;
         OnHealthChanged?.Invoke();
         
         if(Health <= 0)
         {
-            StartCoroutine(Die_Coroutine());
+            ChangeState(new DieState());
             return;
         }
 
         ChangeState(new DamagedState());
-        StartCoroutine(Damagaed_Coroutine());
-    }
-
-    private IEnumerator Damagaed_Coroutine()
-    {
-        agent.isStopped = true;
-        agent.ResetPath();
-        yield return new WaitForSeconds(DamagedTime);
-        ChangeState(new TraceState());
     }
 
     protected IEnumerator Die_Coroutine()

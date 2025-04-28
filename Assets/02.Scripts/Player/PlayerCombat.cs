@@ -82,13 +82,13 @@ public class PlayerCombat : APlayerComponent
         if (!EventSystem.current.IsPointerOverGameObject() && !CameraManager.I.QVCamera.enabled)
         {
             FireBomb();
-            CurrentWeapon.HandleInput();
+            CurrentWeapon?.HandleInput();
         }
 
         if (CameraManager.I.QVCamera.enabled)
         {
             FireBomb();
-            CurrentWeapon.HandleInput();
+            CurrentWeapon?.HandleInput();
         }
     }
 

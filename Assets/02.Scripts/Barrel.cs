@@ -34,6 +34,7 @@ public class Barrel : MonoBehaviour, IDamageable
         {
             for(int i = 0; i < colliders.Length; i++)
             {
+                if (colliders[i].GetInstanceID() == gameObject.GetInstanceID()) continue;
                 Damage damage = new Damage();
                 damage.Value = Damage;
                 damage.From = this.gameObject;
