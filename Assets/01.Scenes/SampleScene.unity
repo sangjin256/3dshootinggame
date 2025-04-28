@@ -3362,6 +3362,7 @@ MonoBehaviour:
   ReadyScreen: {fileID: 1592785196}
   GoScreen: {fileID: 727936232}
   GameOverScreen: {fileID: 1670384701}
+  Player: {fileID: 0}
 --- !u!1 &1304318135
 GameObject:
   m_ObjectHideFlags: 0
@@ -4810,7 +4811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1813721790
 MonoBehaviour:
   m_ObjectHideFlags: 0
