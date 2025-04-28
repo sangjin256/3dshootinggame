@@ -5,7 +5,7 @@ public class DieState : IState<Enemy>
     private float _elapsedTime = 0;
     public void Enter(Enemy enemy)
     {
-        enemy.agent.ResetPath();
+        enemy.ResetPath();
         _elapsedTime = 0f;
     }
 

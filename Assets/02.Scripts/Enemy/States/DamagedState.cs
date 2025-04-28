@@ -6,9 +6,9 @@ public class DamagedState : IState<Enemy>
 
     public void Enter(Enemy enemy)
     {
-        enemy.agent.isStopped = true;
+        enemy.SetIsStopped(true);
         _elapsedTime = 0;
-        enemy.agent.ResetPath();
+        enemy.ResetPath();
     }
 
     public void Update(Enemy enemy)
@@ -22,6 +22,6 @@ public class DamagedState : IState<Enemy>
 
     public void Exit(Enemy enemy)
     {
-        enemy.agent.isStopped = false;
+        enemy.SetIsStopped(false);
     }
 } 

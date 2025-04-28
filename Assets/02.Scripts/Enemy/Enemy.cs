@@ -35,11 +35,10 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
     protected StateMachine<Enemy> stateMachine;
     public IState<Enemy> CurrentState => stateMachine.CurrentState;
 
-    public Vector3 StartPosition;
+    protected Vector3 _startPosition;
     protected GameObjectPool<Enemy> _thisPool;
-    public NavMeshAgent agent;
-    public CharacterController CharacterController;
-    public GameObject player;
+    protected NavMeshAgent _agent;
+    protected CharacterController _characterController;
 
     public Action OnHealthChanged;
 
@@ -50,12 +49,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 
     protected virtual void InitializeEnemy()
     {
-        StartPosition = transform.position;
+        _startPosition = transform.position;
         stateMachine = new StateMachine<Enemy>(this);
-        agent = GetComponent<NavMeshAgent>();
-        agent.speed = MoveSpeed;
-        CharacterController = GetComponent<CharacterController>();
-        player = GameObject.FindGameObjectWithTag("Player");
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = MoveSpeed;
+        _characterController = GetComponent<CharacterController>();
     }
 
     protected virtual void Update()
@@ -101,4 +99,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
 
     public abstract Vector3 GetPatrolPosition();
     public abstract int GetPatrolPositionsCount();
+
+    public void Move(Vector3 position) => _agent.SetDestination(position);
+    public float GetMinDistance() => _characterController.minMoveDistance;
+    public float GetRemainingDistance() => _agent.remainingDistance;
+    public Vector3 GetStartPosition() => _startPosition;
+    public void SetIsStopped(bool IsStop) => _agent.isStopped = IsStop;
+    public void ResetPath() => _agent.ResetPath();
 }

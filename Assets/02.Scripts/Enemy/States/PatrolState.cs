@@ -8,16 +8,15 @@ public class PatrolState : IState<Enemy>
 
     public void Update(Enemy enemy)
     {
-        if (Vector3.Distance(enemy.transform.position, enemy.player.transform.position) < enemy.FindDistance)
+        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) < enemy.FindDistance)
         {
             enemy.ChangeState(new TraceState());
             return;
         }
 
-        Vector3 dir = (enemy.GetPatrolPosition() - enemy.transform.position).normalized;
-        enemy.CharacterController.Move(dir * enemy.MoveSpeed * Time.deltaTime);
+        enemy.Move(enemy.GetPatrolPosition());
 
-        if (Vector3.Distance(enemy.transform.position, enemy.GetPatrolPosition()) <= 0.1f)
+        if (enemy.GetRemainingDistance() <= enemy.GetMinDistance())
         {
             enemy.CurrentPatrolIndex++;
             if (enemy.CurrentPatrolIndex >= enemy.GetPatrolPositionsCount())

@@ -8,13 +8,13 @@ public class FollowTraceState : IState<Enemy>
 
     public void Update(Enemy enemy)
     {
-        if (Vector3.Distance(enemy.transform.position, enemy.player.transform.position) <= enemy.AttackDistance)
+        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) <= enemy.AttackDistance)
         {
             enemy.ChangeState(new FollowAttackState());
             return;
         }
 
-        enemy.agent.SetDestination(enemy.player.transform.position);
+        enemy.Move(GameManager.I.Player.transform.position);
     }
 
     public void Exit(Enemy enemy)

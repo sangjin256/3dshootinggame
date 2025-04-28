@@ -8,9 +8,12 @@ public class GameManager : BehaviourSingleton<GameManager>
     public CanvasGroup GoScreen;
     public CanvasGroup GameOverScreen;
 
+    public PlayerController Player;
+
     public void Start()
     {
         StartCoroutine(Start_Coroutine());
+        Player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
     }
 
     public void SetCursorState(bool Lock)
