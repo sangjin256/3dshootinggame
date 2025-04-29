@@ -25,6 +25,12 @@ public class PlayerCombat : APlayerComponent
     public List<GameObject> OwnWeaponList;
     public IWeapon CurrentWeapon;
 
+    public GameObject UI_SniperZoom;
+    public GameObject UI_Crosshair;
+    public float ZoomInSize = 15f;
+    public float ZoomOutSize = 60f;
+    private bool _zoomMode = false;
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -91,6 +97,28 @@ public class PlayerCombat : APlayerComponent
             FireBomb();
             CurrentWeapon?.HandleInput();
         }
+
+        SwitchZoomMode();
+    }
+
+    public void SwitchZoomMode()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            _zoomMode = !_zoomMode;
+            if (_zoomMode)
+            {
+                UI_SniperZoom.SetActive(true);
+                UI_Crosshair.SetActive(false);
+                Camera.main.fieldOfView = ZoomInSize;
+            }
+            else
+            {
+                UI_SniperZoom.SetActive(false);
+                UI_Crosshair.SetActive(true);
+                Camera.main.fieldOfView = ZoomOutSize;
+            }
+        }
     }
 
     private void FireBomb()
@@ -115,6 +143,7 @@ public class PlayerCombat : APlayerComponent
         {
             if (IsBombLeft())
             {
+                _controller.Animator.SetTrigger("Toss");
                 GameObject bomb = GetBombInPool();
                 //bomb.transform.position = FirePosition.transform.position;
 

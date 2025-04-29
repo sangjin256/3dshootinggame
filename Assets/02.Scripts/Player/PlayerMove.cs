@@ -35,6 +35,9 @@ public class PlayerMove : APlayerComponent
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
+        _controller.Animator.SetFloat("Vertical", v);
+        _controller.Animator.SetFloat("Rotation", h);
+
         if (!_isRolling && !_isClimbing) _direction = new Vector3(h, -0.001f, v);
 
         Jump();
@@ -52,8 +55,6 @@ public class PlayerMove : APlayerComponent
             _direction.y = _yVelocity;
         }
 
-
-        _controller.Animator.SetFloat("MoveAmount", _direction.magnitude);
         _direction = _direction.normalized;
         if (!CameraManager.I.QVCamera.enabled || _isRolling) _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
