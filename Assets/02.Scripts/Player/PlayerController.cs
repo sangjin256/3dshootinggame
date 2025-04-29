@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private PlayerRotate _rotation;
     [SerializeField] private PlayerCombat _combat;
 
+    public Animator Animator;
     private void Awake()
     {
         InitializeComponents();
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         _movement.Initialize(this);
         _rotation.Initialize(this);
         _combat.Initialize(this);
+
+        Animator = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(Damage damage)

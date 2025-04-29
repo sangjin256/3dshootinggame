@@ -32,10 +32,13 @@ public class PlayerMove : APlayerComponent
 
     private void Update()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
 
-        if(!_isRolling && !_isClimbing) _direction = new Vector3(h, -0.01f, v).normalized;
+        _controller.Animator.SetFloat("Vertical", v);
+        _controller.Animator.SetFloat("Rotation", h);
+
+        if (!_isRolling && !_isClimbing) _direction = new Vector3(h, -0.001f, v);
 
         Jump();
         Sprint();
@@ -52,8 +55,10 @@ public class PlayerMove : APlayerComponent
             _direction.y = _yVelocity;
         }
 
+        _direction = _direction.normalized;
         if (!CameraManager.I.QVCamera.enabled || _isRolling) _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
+
 
         if((_characterController.collisionFlags & CollisionFlags.Below) != 0)
         {
@@ -136,7 +141,7 @@ public class PlayerMove : APlayerComponent
             {
                 _yVelocity = 0;
                 _isClimbing = true;
-                _direction = new Vector3(0, 1, .7f).normalized;
+                _direction = new Vector3(0, 1, .7f);
                 _controller.UseStamina(12f * Time.deltaTime);
                 _controller.IsUsingStamina = true;
             }

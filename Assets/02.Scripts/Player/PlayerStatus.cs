@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem.XR;
 
 public class PlayerStatus : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float _staminaRegenRate = 15f;
     [SerializeField] private float _exhaustedRecoveryTime = 3f;
+    private PlayerController _controller;
 
     private PlayerStat _stats;
     private bool _isExhausted;
@@ -14,11 +16,14 @@ public class PlayerStatus : MonoBehaviour
     public void Initialize(PlayerController controller)
     {
         _stats = new PlayerStat(controller.DataSO.MaxHealth, controller.DataSO.MaxStamina);
+        _controller = controller;
     }
 
     private void Update()
     {
         HandleStaminaRegeneration();
+
+        _controller.Animator.SetLayerWeight(2,  1 - _stats.Health / _stats.MaxHealth);
     }
 
     private void HandleStaminaRegeneration()

@@ -21,6 +21,8 @@ public class CameraManager : BehaviourSingleton<CameraManager>
     public float RotationX;
     public float RotationY;
 
+    public float ClampY;
+
     public float HorizontalSpeed = 150f;
     public float VerticalSpeed = 150f;
     public bool IsShooting = false;
@@ -106,7 +108,7 @@ public class CameraManager : BehaviourSingleton<CameraManager>
         float mouseY = Input.GetAxis("Mouse Y");
 
         RotationY += mouseY * VerticalSpeed * Time.deltaTime;
-        RotationY = Mathf.Clamp(RotationY, -90f, 90f);
+        RotationY = Mathf.Clamp(RotationY, -ClampY, ClampY);
     }
 
     public Vector3 GetFireDirection()

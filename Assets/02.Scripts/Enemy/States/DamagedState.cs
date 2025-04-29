@@ -9,6 +9,7 @@ public class DamagedState : IState<Enemy>
         enemy.SetIsStopped(true);
         _elapsedTime = 0;
         enemy.ResetPath();
+        enemy.GetAnimator().SetTrigger("Hit");
     }
 
     public void Update(Enemy enemy)

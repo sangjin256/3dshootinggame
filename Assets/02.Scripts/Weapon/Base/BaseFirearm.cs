@@ -52,24 +52,24 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
 
     public virtual void PositionByCamera()
     {
-
+        transform.forward = Camera.main.transform.forward;
         if (CameraManager.I.FPSCamera.enabled)
         {
             transform.position = Camera.main.transform.position + Camera.main.transform.TransformDirection(_weaponOffset);
             transform.rotation = Camera.main.transform.rotation;
 
-            transform.position += CameraManager.I.ShakePosition;
-        }
-        else if (CameraManager.I.TPSCamera.enabled)
-        {
-            transform.localPosition = _weaponOffset;
-            transform.forward = Camera.main.transform.forward;
-        }
-        else
-        {
-            Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
-            mouseDirection = mouseDirection.normalized;
-            transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
+            //    transform.position += CameraManager.I.ShakePosition;
+            //}
+            //else if (CameraManager.I.TPSCamera.enabled)
+            //{
+            //    transform.localPosition = _weaponOffset;
+            //    transform.forward = Camera.main.transform.forward;
+            //}
+            //else
+            //{
+            //    Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+            //    mouseDirection = mouseDirection.normalized;
+            //    transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
         }
     }
 

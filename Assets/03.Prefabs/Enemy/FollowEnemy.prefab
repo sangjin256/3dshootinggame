@@ -237,7 +237,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe1b77c14b7eceb4d81d6de8e1f8b3da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentState: 2
   CurrentPatrolIndex: 0
   IdleCoolTime: 3
   IdleElapsedTime: 0
@@ -251,10 +250,6 @@ MonoBehaviour:
   MaxHealth: 100
   DamagedTime: 0.5
   DeathTime: 2
-  StartPosition: {x: 0, y: 0, z: 0}
-  agent: {fileID: 0}
-  CharacterController: {fileID: 0}
-  player: {fileID: 0}
 --- !u!195 &7690213265384494794
 NavMeshAgent:
   m_ObjectHideFlags: 0
