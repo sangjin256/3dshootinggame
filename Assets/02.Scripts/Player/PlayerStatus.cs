@@ -23,7 +23,7 @@ public class PlayerStatus : MonoBehaviour
     {
         HandleStaminaRegeneration();
 
-        _controller.Animator.SetLayerWeight(2,  1 - _stats.Health / _stats.MaxHealth);
+        _controller.Animator.SetLayerWeight(_controller.Animator.GetLayerIndex("InjureLayer"),  1 - _stats.Health / _stats.MaxHealth);
     }
 
     private void HandleStaminaRegeneration()

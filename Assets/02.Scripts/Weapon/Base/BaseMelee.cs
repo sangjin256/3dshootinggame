@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
@@ -25,7 +26,7 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     }
     private void LateUpdate()
     {
-        PositionByCamera();
+        //PositionByCamera();
     }
 
     public virtual void HandleInput()
