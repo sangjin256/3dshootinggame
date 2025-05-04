@@ -34,7 +34,7 @@ public class SMG : BaseFirearm
                 {
                     CurrentAmmo--;
                     PlayerEventManager.I.OnFire?.Invoke();
-                    OnHitEffect(hitInfo, 0.1f);
+                    OnHitEffect(hitInfo, 0.05f);
                     if (hitInfo.collider.GetComponent<IDamageable>() != null)
                     {
                         IDamageable target = hitInfo.collider.GetComponent<IDamageable>();
@@ -51,10 +51,12 @@ public class SMG : BaseFirearm
                     CurrentAmmo--;
                     PlayerEventManager.I.OnFire?.Invoke();
                     CameraManager.I.Shake(0.1f, 0.1f);
+
                     BulletTrail trail = BulletTrailPool.Get();
                     trail.Initialize(FirePosition.position, FirePosition.position + finalDireciton.normalized * 30f);
                 }
 
+                MuzzleParticle.Play();
                 FireElapsedTime = 0;
             }
 

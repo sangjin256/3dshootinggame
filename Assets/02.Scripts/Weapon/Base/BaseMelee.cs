@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
@@ -17,6 +18,7 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     public Vector3 _weaponOffset;
 
     public Transform AttackPoint;
+    public ParticleSystem SlashEffect;
 
     public virtual void Awake()
     {
@@ -25,7 +27,7 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     }
     private void LateUpdate()
     {
-        PositionByCamera();
+        //PositionByCamera();
     }
 
     public virtual void HandleInput()
@@ -75,7 +77,9 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     {
         Collider[] colliders = Physics.OverlapSphere(PlayerTransform.position, Range, LayerMask);
 
-        AttackAnimation();
+        //AttackAnimation();
+        GameManager.I.Player.Animator.SetTrigger("Slash");
+        SlashEffect.Play();
 
         for(int i = 0; i < colliders.Length; i++)
         {
@@ -98,4 +102,16 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     }
 
     public abstract void AttackAnimation();
+
+    public void Enter()
+    {
+        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("SwordLayer"), 1);
+        gameObject.SetActive(true);
+    }
+    
+    public void Exit()
+    {
+        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("SwordLayer"), 0);
+        gameObject.SetActive(false);
+    }
 }

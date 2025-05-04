@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     [SerializeField] private PlayerRotate _rotation;
     [SerializeField] private PlayerCombat _combat;
 
+    public Animator Animator;
     private void Awake()
     {
         InitializeComponents();
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         _movement.Initialize(this);
         _rotation.Initialize(this);
         _combat.Initialize(this);
+
+        Animator = GetComponentInChildren<Animator>();
     }
 
     public void TakeDamage(Damage damage)
@@ -44,8 +47,24 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float GetMaxHealth() => _status.GetMaxHealth();
     public float GetMaxStamina() => _status.GetMaxStamina();
 
-    public int GetBombCount() => _combat.BombCount;
-    public int GetMaxBombCount() => _combat.MaxBombCount;
+    public int GetBombCount()
+    {
+        if(_combat.CurrentWeapon as ThrowSystem != null)
+        {
+            ThrowSystem throwSystem = _combat.CurrentWeapon as ThrowSystem;
+            return throwSystem.ThrowableCount;
+        }
+        return 0;
+    }
+    public int GetMaxBombCount()
+    {
+        if (_combat.CurrentWeapon as ThrowSystem != null)
+        {
+            ThrowSystem throwSystem = _combat.CurrentWeapon as ThrowSystem;
+            return throwSystem.MaxThrowableCount;
+        }
+        return 0;
+    }
     public int GetAmmo()
     {
         if(_combat.CurrentWeapon as IFireable != null)
