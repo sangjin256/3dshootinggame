@@ -14,6 +14,8 @@ public class ThrowSystem : MonoBehaviour, IWeapon
     public float MaxThrowPower;
 
     public GameObject ThrowablePrefab;
+    public Transform OriginPosition;
+    public GameObject GrenadeOnHand;
 
     public GameObjectPool<BaseThrowable> ThrowablePool;
 
@@ -29,7 +31,7 @@ public class ThrowSystem : MonoBehaviour, IWeapon
 
     public void HandleInput()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
         {
             if (ThrowableCount > 0)
             {
@@ -40,15 +42,11 @@ public class ThrowSystem : MonoBehaviour, IWeapon
 
         if (IsCharging) Charge();
 
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(0))
         {
             if (ThrowableCount > 0)
             {
-                Throw();
-
-                CameraManager.I.Shake(0.1f, 0.1f);
-                _throwPower = 0f;
-                IsCharging = false;
+                GameManager.I.Player.Animator.SetTrigger("Toss");
             }
         }
     }
@@ -65,9 +63,10 @@ public class ThrowSystem : MonoBehaviour, IWeapon
 
     public void Throw()
     {
-        GameManager.I.Player.Animator.SetTrigger("Toss");
         GameObject throwable = ThrowablePool.Get().gameObject;
-        
+        ThrowableCount--;
+        PlayerEventManager.I.OnThrow?.Invoke();
+        throwable.transform.position = OriginPosition.position;
         // 풀에서 가져오는거라 초기화 필요
         //throwable.transform.position = FirePosition.transform.position;
 
@@ -75,5 +74,20 @@ public class ThrowSystem : MonoBehaviour, IWeapon
         Rigidbody bombRigidbody = throwable.GetComponent<Rigidbody>();
         bombRigidbody.AddForce(Camera.main.transform.forward * _throwPower, ForceMode.Impulse);
         bombRigidbody.AddTorque(Vector3.one);
+
+        _throwPower = 0f;
+        IsCharging = false;
+    }
+
+    public void Enter()
+    {
+        GrenadeOnHand.SetActive(true);
+        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ThrowLayer"), 1);
+    }
+
+    public void Exit()
+    {
+        GrenadeOnHand.SetActive(false);
+        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ThrowLayer"), 0);
     }
 }

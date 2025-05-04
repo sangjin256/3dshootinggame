@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Animations.Rigging;
 
 public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
 {
@@ -19,13 +20,17 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
 
     public bool IsReloading;
     public int DamageAmount;
+    public float TransformLerpSpeed = 20f;
 
     public Transform FirePosition;
     public ParticleSystem BulletEffect;
     public GameObject BulletTrailPrefab;
+    public ParticleSystem MuzzleParticle;
     public GameObjectPool<BulletTrail> BulletTrailPool;
 
     public Vector3 _weaponOffset;
+
+    public RigBuilder RigBuilder;
 
     private void Awake()
     {
@@ -55,21 +60,19 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
         transform.forward = Camera.main.transform.forward;
         if (CameraManager.I.FPSCamera.enabled)
         {
-            transform.position = Camera.main.transform.position + Camera.main.transform.TransformDirection(_weaponOffset);
+            transform.position = Vector3.Lerp(transform.position, Camera.main.transform.position + Camera.main.transform.TransformDirection(_weaponOffset), Time.deltaTime * TransformLerpSpeed);
             transform.rotation = Camera.main.transform.rotation;
-
-            //    transform.position += CameraManager.I.ShakePosition;
-            //}
-            //else if (CameraManager.I.TPSCamera.enabled)
-            //{
-            //    transform.localPosition = _weaponOffset;
-            //    transform.forward = Camera.main.transform.forward;
-            //}
-            //else
-            //{
-            //    Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
-            //    mouseDirection = mouseDirection.normalized;
-            //    transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
+        }
+        else if (CameraManager.I.TPSCamera.enabled)
+        {
+            transform.localPosition = _weaponOffset;
+            transform.forward = Camera.main.transform.forward;
+        }
+        else
+        {
+            Vector3 mouseDirection = Input.mousePosition - new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+            mouseDirection = mouseDirection.normalized;
+            transform.forward = new Vector3(mouseDirection.x, 0, mouseDirection.y);
         }
     }
 
@@ -140,5 +143,19 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
             KnockbackElapsedTime += Time.deltaTime;
             yield return null;
         }
+    }
+
+    public void Enter()
+    {
+        RigBuilder.layers[0].active = true;
+        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ShotLayer"), 1);
+        gameObject.SetActive(true);
+    }
+
+    public void Exit()
+    {
+        RigBuilder.layers[0].active = false;
+        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ShotLayer"), 0);
+        gameObject.SetActive(false);
     }
 }

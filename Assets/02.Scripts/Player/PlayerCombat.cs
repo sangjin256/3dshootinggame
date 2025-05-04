@@ -5,25 +5,11 @@ using UnityEngine.EventSystems;
 public class PlayerCombat : APlayerComponent
 {
     public Transform MeleeAttackPosition;
-    // - 폭탄 프리펩
-    public GameObject BombPrefab;
-    // - 던지는 힘
-    public float ChargeSpeed = 10f;
-    private const float _startThrowPower = 10f;
-    [SerializeField] private float _throwPower = 0f;
-    private const float _maxThrowPower = 40f;
-    private bool IsCharging = false;
 
     private Camera _camera;
 
-    public int BombCount = 3;
-    public int MaxBombCount = 3;
-    private int _bombPoolIndex = 0;
-
-    private List<GameObject> BombPoolList;
-
     public List<GameObject> OwnWeaponList;
-    private int _beforeWeaponIndex = -1;
+    private int _beforeWeaponIndex = 0;
     private int _currentWeaponIndex = 0;
     public IWeapon CurrentWeapon;
 
@@ -38,37 +24,6 @@ public class PlayerCombat : APlayerComponent
         Cursor.lockState = CursorLockMode.Locked;
         PlayerEventManager.I.OnFire += ShotAnimation;
         _camera = Camera.main;
-        InitializeBombPool();
-    }
-
-    public void InitializeBombPool()
-    {
-        BombPoolList = new List<GameObject>();
-        for (int i = 0; i < MaxBombCount * 2; i++)
-        {
-            GameObject Bomb = Instantiate(BombPrefab);
-            Bomb.SetActive(false);
-            BombPoolList.Add(Bomb);
-        }
-    }
-
-    public GameObject GetBombInPool()
-    {
-        GameObject bomb = BombPoolList[_bombPoolIndex];
-        bomb.SetActive(true);
-
-        _bombPoolIndex++;
-        BombCount--;
-        if (_bombPoolIndex >= BombPoolList.Count) _bombPoolIndex = 0;
-        PlayerEventManager.I.OnThrow?.Invoke();
-
-        return bomb;
-    }
-
-    public bool IsBombLeft()
-    {
-        if (BombCount > 0) return true;
-        return false;
     }
 
     private void Update()
@@ -105,13 +60,13 @@ public class PlayerCombat : APlayerComponent
             _currentWeaponIndex = 2;
         }
         float wheelInput = Input.GetAxisRaw("Mouse ScrollWheel");
-        if (wheelInput > 0.5f)
+        if (wheelInput > 0)
         {
             _beforeWeaponIndex = _currentWeaponIndex;
             _currentWeaponIndex++;
             if(_currentWeaponIndex >= OwnWeaponList.Count) _currentWeaponIndex = 0;
         }
-        else if (wheelInput < -0.5f)
+        else if (wheelInput < 0)
         {
             _beforeWeaponIndex = _currentWeaponIndex;
             _currentWeaponIndex--;
@@ -120,18 +75,9 @@ public class PlayerCombat : APlayerComponent
 
         if (_beforeWeaponIndex != _currentWeaponIndex)
         {
-            for (int i = 0; i < OwnWeaponList.Count; i++)
-            {
-                if (i == _currentWeaponIndex)
-                {
-                    OwnWeaponList[i].SetActive(true);
-                    CurrentWeapon = OwnWeaponList[i].GetComponent<IWeapon>();
-                }
-                else
-                {
-                    OwnWeaponList[i].SetActive(false);
-                }
-            }
+            OwnWeaponList[_beforeWeaponIndex].GetComponent<IWeapon>().Exit();
+            CurrentWeapon = OwnWeaponList[_currentWeaponIndex].GetComponent<IWeapon>();
+            CurrentWeapon.Enter();
 
             PlayerEventManager.I.OnWeaponChanged?.Invoke(_currentWeaponIndex);
             _beforeWeaponIndex = _currentWeaponIndex;
