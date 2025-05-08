@@ -17,7 +17,7 @@ public class ElitePatrolState : IState<Enemy>
 
     public void Update(Enemy enemy)
     {
-        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) < enemy.FindDistance)
+        if (Vector3.Distance(enemy.transform.position, GameManager.Instance.Player.transform.position) < enemy.FindDistance)
         {
             enemy.ChangeState(new EliteTraceState());
             return;
@@ -36,7 +36,6 @@ public class ElitePatrolState : IState<Enemy>
 
     public void Exit(Enemy enemy)
     {
-        // 필요한 정리 작업이 있다면 여기에 구현
     }
 
     private void SetNewPatrolPoint(Enemy enemy)

@@ -9,7 +9,7 @@ public class PatrolState : IState<Enemy>
 
     public void Update(Enemy enemy)
     {
-        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) < enemy.FindDistance)
+        if (Vector3.Distance(enemy.transform.position, GameManager.Instance.Player.transform.position) < enemy.FindDistance)
         {
             enemy.ChangeState(new TraceState());
             return;

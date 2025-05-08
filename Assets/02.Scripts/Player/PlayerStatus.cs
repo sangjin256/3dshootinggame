@@ -41,7 +41,7 @@ public class PlayerStatus : MonoBehaviour
 
         if (_stats.Health <= 0)
         {
-            GameManager.I.GameOver();
+            GameManager.Instance.GameOver();
         }
     }
 
@@ -83,12 +83,12 @@ public class PlayerStatus : MonoBehaviour
 
     private void NotifyHealthChanged()
     {
-        PlayerEventManager.I.OnHealthChanged?.Invoke(_stats.Health);
+        PlayerEventManager.Instance.OnHealthChanged?.Invoke(_stats.Health);
     }
 
     private void NotifyStaminaChanged()
     {
-        PlayerEventManager.I.OnStaminaChanged?.Invoke(_stats.Stamina);
+        PlayerEventManager.Instance.OnStaminaChanged?.Invoke(_stats.Stamina);
     }
 
     public bool IsExhausted() => _isExhausted;

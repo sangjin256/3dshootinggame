@@ -1,12 +1,16 @@
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class EliteEnemy : Enemy
 {
-    [Header("Elite Enemy Settings")]
-    public float specialAttackRange = 5f;
-    public float specialAttackCooldown = 10f;
-    public float explosionRadius = 5f;
-    public float explosionDamage = 30f;
+    public float SpecialAttackDistance = 5f;
+    public float SpecialAttackCooltime = 10f;
+    public float ExplosionRadius = 5f;
+    public float ExplosionDamage = 30f;
+    public float SpecialAttackRadius;
+    public float SpecialAttackDamage;
+    public float KnockbackHeight;
+    public float KnockbackDuration;
 
     public override void TakeDamage(Damage damage)
     {
@@ -18,6 +22,7 @@ public class EliteEnemy : Enemy
         
         if(Health <= 0)
         {
+            SpawnCoins(100, 150, 30, 40, 12f);
             ChangeState(new EliteDieState());
             return;
         }

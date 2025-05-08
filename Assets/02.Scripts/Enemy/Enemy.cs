@@ -62,7 +62,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
         stateMachine.Update();
     }
 
-    public void ChangeState(IState<Enemy> newState)
+    public virtual void ChangeState(IState<Enemy> newState)
     {
         stateMachine.ChangeState(newState);
     }
@@ -77,7 +77,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
         
         if(Health <= 0)
         {
-            SpawnCoins();
+            SpawnCoins(5, 11, 10, 15, 7f);
             ChangeState(new DieState());
             return;
         }
@@ -85,9 +85,10 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
         ChangeState(new DamagedState());
     }
 
-    private void SpawnCoins()
+    public void SpawnCoins(int minCount, int maxCount, int minHeight, int maxHeight, float radius)
     {
-        int coinCount = UnityEngine.Random.Range(5, 11); // 5에서 10개 사이의 코인 생성
+        int coinCount = UnityEngine.Random.Range(minCount, maxCount); // 5에서 10개 사이의 코인 생성
+        Vector3 upForce = Vector3.up * UnityEngine.Random.Range(minHeight, maxHeight);
         for (int i = 0; i < coinCount; i++)
         {
             Vector3 randomOffset = new Vector3(
@@ -100,11 +101,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IPoolable
             Rigidbody rb = coin.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.AddForce(Vector3.up * UnityEngine.Random.Range(5f, 8f), ForceMode.Impulse);
+                rb.AddForce(upForce, ForceMode.Impulse);
                 rb.AddTorque(new Vector3(
-                    UnityEngine.Random.Range(-5f, 5f),
-                    UnityEngine.Random.Range(-5f, 5f),
-                    UnityEngine.Random.Range(-5f, 5f)
+                    UnityEngine.Random.Range(-radius, radius),
+                    UnityEngine.Random.Range(-radius, radius),
+                    UnityEngine.Random.Range(-radius, radius)
                 ), ForceMode.Impulse);
             }
         }

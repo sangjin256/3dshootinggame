@@ -27,6 +27,7 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
     public GameObject BulletTrailPrefab;
     public ParticleSystem MuzzleParticle;
     public GameObjectPool<BulletTrail> BulletTrailPool;
+    public LayerMask LayerMask;
 
     public Vector3 _weaponOffset;
 
@@ -49,7 +50,7 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
         {
             FireElapsedTime = FireCoolTime;
             SpreadElapsedTime = 0f;
-            CameraManager.I.IsShooting = false;
+            CameraManager.Instance.IsShooting = false;
         }
 
         if (Input.GetKeyDown(KeyCode.R)) Reload();
@@ -58,12 +59,12 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
     public virtual void PositionByCamera()
     {
         transform.forward = Camera.main.transform.forward;
-        if (CameraManager.I.FPSCamera.enabled)
+        if (CameraManager.Instance.FPSCamera.enabled)
         {
             transform.position = Vector3.Lerp(transform.position, Camera.main.transform.position + Camera.main.transform.TransformDirection(_weaponOffset), Time.deltaTime * TransformLerpSpeed);
             transform.rotation = Camera.main.transform.rotation;
         }
-        else if (CameraManager.I.TPSCamera.enabled)
+        else if (CameraManager.Instance.TPSCamera.enabled)
         {
             transform.localPosition = _weaponOffset;
             transform.forward = Camera.main.transform.forward;
@@ -90,28 +91,28 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
 
     private IEnumerator ReLoadCoroutine()
     {
-        PlayerEventManager.I.OnReload?.Invoke(true);
+        PlayerEventManager.Instance.OnReload?.Invoke(true);
 
         IsReloading = true;
         yield return new WaitForSeconds(2f);
         IsReloading = false;
         CurrentAmmo = MaxAmmo;
 
-        PlayerEventManager.I.OnFire?.Invoke();
-        PlayerEventManager.I.OnReload?.Invoke(false);
+        PlayerEventManager.Instance.OnFire?.Invoke();
+        PlayerEventManager.Instance.OnReload?.Invoke(false);
     }
 
     protected Vector3 RandomSpreadDirection()
     {
         Vector2 randomPosition = Random.insideUnitCircle * ((SpreadCoolTime - SpreadElapsedTime) / SpreadCoolTime) * SpreadAmount;
-        Vector3 finalDireciton = (CameraManager.I.transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0)).normalized;
+        Vector3 finalDireciton = (CameraManager.Instance.transform.forward + new Vector3(randomPosition.x, randomPosition.y, 0)).normalized;
 
         return finalDireciton;
     }
 
     protected void OnHitEffect(RaycastHit hitInfo, float shakeMagnitude)
     {
-        CameraManager.I.Shake(0.1f, shakeMagnitude);
+        CameraManager.Instance.Shake(0.1f, shakeMagnitude);
 
         BulletEffect.transform.position = hitInfo.point;
         BulletEffect.transform.forward = hitInfo.normal;
@@ -148,14 +149,14 @@ public abstract class BaseFirearm : MonoBehaviour, IFireable, IWeapon
     public void Enter()
     {
         RigBuilder.layers[0].active = true;
-        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ShotLayer"), 1);
+        GameManager.Instance.Player.Animator.SetLayerWeight(GameManager.Instance.Player.Animator.GetLayerIndex("ShotLayer"), 1);
         gameObject.SetActive(true);
     }
 
     public void Exit()
     {
         RigBuilder.layers[0].active = false;
-        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ShotLayer"), 0);
+        GameManager.Instance.Player.Animator.SetLayerWeight(GameManager.Instance.Player.Animator.GetLayerIndex("ShotLayer"), 0);
         gameObject.SetActive(false);
     }
 }

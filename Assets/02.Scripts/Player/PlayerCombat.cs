@@ -22,7 +22,7 @@ public class PlayerCombat : APlayerComponent
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        PlayerEventManager.I.OnFire += ShotAnimation;
+        PlayerEventManager.Instance.OnFire += ShotAnimation;
         _camera = Camera.main;
     }
 
@@ -30,12 +30,12 @@ public class PlayerCombat : APlayerComponent
     {
         ChangeWeapon();
 
-        if (!EventSystem.current.IsPointerOverGameObject() && !CameraManager.I.QVCamera.enabled)
+        if (!EventSystem.current.IsPointerOverGameObject() && !CameraManager.Instance.QVCamera.enabled)
         {
             CurrentWeapon?.HandleInput();
         }
 
-        if (CameraManager.I.QVCamera.enabled)
+        if (CameraManager.Instance.QVCamera.enabled)
         {
             CurrentWeapon?.HandleInput();
         }
@@ -79,7 +79,7 @@ public class PlayerCombat : APlayerComponent
             CurrentWeapon = OwnWeaponList[_currentWeaponIndex].GetComponent<IWeapon>();
             CurrentWeapon.Enter();
 
-            PlayerEventManager.I.OnWeaponChanged?.Invoke(_currentWeaponIndex);
+            PlayerEventManager.Instance.OnWeaponChanged?.Invoke(_currentWeaponIndex);
             _beforeWeaponIndex = _currentWeaponIndex;
         }
     }

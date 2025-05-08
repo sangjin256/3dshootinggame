@@ -7,8 +7,8 @@ public class TPSCamera : MonoBehaviour
 
     public Vector3 GetPosition()
     {
-        transform.eulerAngles = new Vector3(-CameraManager.I.RotationY, CameraManager.I.RotationX, 0);
-        return CameraManager.I.ShakePosition + CameraManager.I.TPSTarget.position - transform.forward * _distance;
+        transform.eulerAngles = new Vector3(-CameraManager.Instance.RotationY, CameraManager.Instance.RotationX, 0);
+        return CameraManager.Instance.ShakePosition + CameraManager.Instance.TPSTarget.position - transform.forward * _distance;
     }
 
     private void LateUpdate()

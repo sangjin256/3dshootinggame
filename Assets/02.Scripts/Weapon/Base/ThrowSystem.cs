@@ -46,7 +46,7 @@ public class ThrowSystem : MonoBehaviour, IWeapon
         {
             if (ThrowableCount > 0)
             {
-                GameManager.I.Player.Animator.SetTrigger("Toss");
+                GameManager.Instance.Player.Animator.SetTrigger("Toss");
             }
         }
     }
@@ -65,7 +65,7 @@ public class ThrowSystem : MonoBehaviour, IWeapon
     {
         GameObject throwable = ThrowablePool.Get().gameObject;
         ThrowableCount--;
-        PlayerEventManager.I.OnThrow?.Invoke();
+        PlayerEventManager.Instance.OnThrow?.Invoke();
         throwable.transform.position = OriginPosition.position;
         // 풀에서 가져오는거라 초기화 필요
         //throwable.transform.position = FirePosition.transform.position;
@@ -82,12 +82,12 @@ public class ThrowSystem : MonoBehaviour, IWeapon
     public void Enter()
     {
         GrenadeOnHand.SetActive(true);
-        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ThrowLayer"), 1);
+        GameManager.Instance.Player.Animator.SetLayerWeight(GameManager.Instance.Player.Animator.GetLayerIndex("ThrowLayer"), 1);
     }
 
     public void Exit()
     {
         GrenadeOnHand.SetActive(false);
-        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("ThrowLayer"), 0);
+        GameManager.Instance.Player.Animator.SetLayerWeight(GameManager.Instance.Player.Animator.GetLayerIndex("ThrowLayer"), 0);
     }
 }

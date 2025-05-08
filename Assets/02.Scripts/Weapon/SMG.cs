@@ -14,13 +14,13 @@ public class SMG : BaseFirearm
     {
         if (CurrentAmmo > 0)
         {
-            CameraManager.I.IsShooting = true;
+            CameraManager.Instance.IsShooting = true;
             if (FireElapsedTime >= FireCoolTime)
             {
                 Vector3 finalDireciton = RandomSpreadDirection();
-                Ray ray = new Ray(CameraManager.I.transform.position, finalDireciton);
+                Ray ray = new Ray(CameraManager.Instance.transform.position, finalDireciton);
 
-                if (CameraManager.I.QVCamera.enabled)
+                if (CameraManager.Instance.QVCamera.enabled)
                 {
                     Vector2 randomPosition = Random.insideUnitCircle * ((SpreadCoolTime - SpreadElapsedTime) / SpreadCoolTime) * SpreadAmount;
                     finalDireciton = (FirePosition.forward + new Vector3(randomPosition.x, randomPosition.y, 0)).normalized;
@@ -29,11 +29,12 @@ public class SMG : BaseFirearm
 
                 RaycastHit hitInfo = new RaycastHit();
 
-                bool isHit = Physics.Raycast(ray, out hitInfo, 50f);
+                bool isHit = Physics.Raycast(ray, out hitInfo, 50f, LayerMask);
                 if (isHit)
                 {
+                    Debug.Log(hitInfo.collider);
                     CurrentAmmo--;
-                    PlayerEventManager.I.OnFire?.Invoke();
+                    PlayerEventManager.Instance.OnFire?.Invoke();
                     OnHitEffect(hitInfo, 0.05f);
                     if (hitInfo.collider.GetComponent<IDamageable>() != null)
                     {
@@ -49,8 +50,8 @@ public class SMG : BaseFirearm
                 else
                 {
                     CurrentAmmo--;
-                    PlayerEventManager.I.OnFire?.Invoke();
-                    CameraManager.I.Shake(0.1f, 0.1f);
+                    PlayerEventManager.Instance.OnFire?.Invoke();
+                    CameraManager.Instance.Shake(0.1f, 0.05f);
 
                     BulletTrail trail = BulletTrailPool.Get();
                     trail.Initialize(FirePosition.position, FirePosition.position + finalDireciton.normalized * 30f);
@@ -68,7 +69,7 @@ public class SMG : BaseFirearm
         }
         else
         {
-            CameraManager.I.IsShooting = false;
+            CameraManager.Instance.IsShooting = false;
         }
 
         FireElapsedTime += Time.deltaTime;
@@ -77,7 +78,7 @@ public class SMG : BaseFirearm
         {
             IsReloading = false;
             StopAllCoroutines();
-            PlayerEventManager.I.OnReload(false);
+            PlayerEventManager.Instance.OnReload(false);
         }
     }
 
