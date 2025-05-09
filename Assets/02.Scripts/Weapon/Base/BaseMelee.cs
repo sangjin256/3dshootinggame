@@ -52,15 +52,15 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     public virtual void PositionByCamera()
     {
 
-        if (CameraManager.I.FPSCamera.enabled)
+        if (CameraManager.Instance.FPSCamera.enabled)
         {
             if (_isAnimation) return;
             transform.position = Camera.main.transform.position + Camera.main.transform.TransformDirection(_weaponOffset);
             transform.rotation = Camera.main.transform.rotation;
 
-            transform.position += CameraManager.I.ShakePosition;
+            transform.position += CameraManager.Instance.ShakePosition;
         }
-        else if (CameraManager.I.TPSCamera.enabled)
+        else if (CameraManager.Instance.TPSCamera.enabled)
         {
             if (!_isAnimation) transform.localPosition = _weaponOffset;
             transform.forward = Camera.main.transform.forward;
@@ -78,7 +78,7 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
         Collider[] colliders = Physics.OverlapSphere(PlayerTransform.position, Range, LayerMask);
 
         //AttackAnimation();
-        GameManager.I.Player.Animator.SetTrigger("Slash");
+        GameManager.Instance.Player.Animator.SetTrigger("Slash");
         SlashEffect.Play();
 
         for(int i = 0; i < colliders.Length; i++)
@@ -105,13 +105,13 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
 
     public void Enter()
     {
-        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("SwordLayer"), 1);
+        GameManager.Instance.Player.Animator.SetLayerWeight(GameManager.Instance.Player.Animator.GetLayerIndex("SwordLayer"), 1);
         gameObject.SetActive(true);
     }
     
     public void Exit()
     {
-        GameManager.I.Player.Animator.SetLayerWeight(GameManager.I.Player.Animator.GetLayerIndex("SwordLayer"), 0);
+        GameManager.Instance.Player.Animator.SetLayerWeight(GameManager.Instance.Player.Animator.GetLayerIndex("SwordLayer"), 0);
         gameObject.SetActive(false);
     }
 }

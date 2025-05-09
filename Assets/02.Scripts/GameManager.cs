@@ -1,6 +1,15 @@
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum EGameState
+{
+    Ready,
+    Run,
+    Pause,
+    Over,
+}
 
 public class GameManager : BehaviourSingleton<GameManager>
 {
@@ -10,10 +19,57 @@ public class GameManager : BehaviourSingleton<GameManager>
 
     public PlayerController Player;
 
+    private EGameState _gameState = EGameState.Ready;
+    public EGameState GameState => _gameState;
+
     public void Start()
     {
         StartCoroutine(Start_Coroutine());
         Player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (UI_PopupManager.Instance.IsEmpty()) Pause();
+            else
+            {
+                UI_PopupManager.Instance.Close();
+                if (UI_PopupManager.Instance.IsEmpty())
+                {
+                    Continue();
+                }
+            }
+        }
+    }
+
+    private void Pause()
+    {
+        _gameState = EGameState.Pause;
+        Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+
+        UI_PopupManager.Instance.Open(EPopupType.UI_OptionPopup);
+    }
+
+    public void Continue()
+    {
+        Time.timeScale = 1;
+        Cursor.lockState = CursorLockMode.Locked;
+        _gameState = EGameState.Run;
+    }
+
+    public void Restart()
+    {
+        _gameState = EGameState.Run;
+        Time.timeScale = 1;
+
+        Cursor.lockState = CursorLockMode.Locked;
+
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     public void SetCursorState(bool Lock)

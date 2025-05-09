@@ -55,7 +55,7 @@ public class PlayerMove : APlayerComponent
             _direction.y = _yVelocity;
         }
 
-        if (!CameraManager.I.QVCamera.enabled || _isRolling) _direction = transform.TransformDirection(_direction);
+        if (!CameraManager.Instance.QVCamera.enabled || _isRolling) _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
 
 

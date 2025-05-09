@@ -3,25 +3,25 @@ using System.Collections;
 
 public abstract class BehaviourSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    private static T i = null;
+    private static T _instance = null;
 
-    public static T I
+    public static T Instance
     {
         get
         {
-            if (i == null)
+            if (_instance == null)
             {
-                i = FindFirstObjectByType(typeof(T)) as T;
-                if (i == null)
+                _instance = FindFirstObjectByType(typeof(T)) as T;
+                if (_instance == null)
                 {
 
                 }
             }
-            return i;
+            return _instance;
         }
         set
         {
-            i = value;
+            _instance = value;
         }
     }
 }

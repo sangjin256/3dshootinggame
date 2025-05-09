@@ -9,19 +9,21 @@ public class TraceState : IState<Enemy>
 
     public void Update(Enemy enemy)
     {
-        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) <= enemy.AttackDistance)
+        float distanceToPlayer = Vector3.Distance(enemy.transform.position, GameManager.Instance.Player.transform.position);
+
+        if (distanceToPlayer <= enemy.AttackDistance)
         {
             enemy.ChangeState(new AttackState());
             return;
         }
 
-        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) >= enemy.ReturnDistance)
+        if (distanceToPlayer > enemy.FindDistance)
         {
             enemy.ChangeState(new ReturnState());
             return;
         }
 
-        enemy.Move(GameManager.I.Player.transform.position);
+        enemy.Move(GameManager.Instance.Player.transform.position);
     }
 
     public void Exit(Enemy enemy)

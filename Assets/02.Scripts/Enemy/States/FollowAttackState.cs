@@ -12,7 +12,7 @@ public class FollowAttackState : IState<Enemy>
 
     public void Update(Enemy enemy)
     {
-        if (Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position) >= enemy.AttackDistance)
+        if (Vector3.Distance(enemy.transform.position, GameManager.Instance.Player.transform.position) >= enemy.AttackDistance)
         {
             enemy.ChangeState(new FollowTraceState());
             return;
@@ -25,7 +25,7 @@ public class FollowAttackState : IState<Enemy>
             Damage damage = new Damage();
             damage.Value = 10;
             damage.From = enemy.gameObject;
-            GameManager.I.Player.TakeDamage(damage);
+            GameManager.Instance.Player.TakeDamage(damage);
             attackElapsedTime = 0f;
         }
     }

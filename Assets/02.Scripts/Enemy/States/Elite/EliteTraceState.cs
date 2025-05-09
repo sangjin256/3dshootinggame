@@ -3,41 +3,37 @@ using UnityEngine.AI;
 
 public class EliteTraceState : IState<Enemy>
 {
-    private float attackRange = 3f;
-    private float specialAttackRange = 5f;
-    private float specialAttackCooldown = 10f;
-    private float currentCooldown;
-
     public void Enter(Enemy enemy)
     {
-        enemy.SetIsStopped(false);
         enemy.GetAnimator().SetTrigger("IdleToMove");
-        enemy.ResetPath();
-        currentCooldown = specialAttackCooldown;
     }
 
     public void Update(Enemy enemy)
     {
-        if (GameManager.I.Player == null) return;
-
-        float distanceToPlayer = Vector3.Distance(enemy.transform.position, GameManager.I.Player.transform.position);
+        float distanceToPlayer = Vector3.Distance(enemy.transform.position, GameManager.Instance.Player.transform.position);
         
-        if (distanceToPlayer <= enemy.AttackDistance)
+        if(distanceToPlayer <= (enemy as EliteEnemy).SpecialAttackDistance)
         {
-            enemy.ChangeState(new EliteAttackState());
+            enemy.ChangeState(new EliteSpecialAttackState());
+            return;
+        }
+        else if (distanceToPlayer <= enemy.AttackDistance)
+        {
+            float value = Random.value;
+            if (value < 0.8f) enemy.ChangeState(new EliteAttackState());
+            else enemy.ChangeState(new EliteSpecialAttackState());
+            return;
         }
         else if (distanceToPlayer > enemy.FindDistance)
         {
             enemy.ChangeState(new ElitePatrolState());
+            return;
         }
-        else
-         {
-            enemy.Move(GameManager.I.Player.transform.position);
-        }
+        
+        enemy.Move(GameManager.Instance.Player.transform.position);
     }
 
     public void Exit(Enemy enemy)
     {
-        enemy.ResetPath();
     }
 } 
