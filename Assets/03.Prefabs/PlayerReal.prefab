@@ -2863,6 +2863,10 @@ PrefabInstance:
       propertyPath: RigBuilder
       value: 
       objectReference: {fileID: 1419593455757673574}
+    - target: {fileID: 7587765448465963101, guid: 1cc0813824cdebb4e96a0ad7bd50e03d, type: 3}
+      propertyPath: LayerMask.m_Bits
+      value: 1665
+      objectReference: {fileID: 0}
     - target: {fileID: 7733613423022931941, guid: 1cc0813824cdebb4e96a0ad7bd50e03d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
