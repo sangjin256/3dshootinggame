@@ -47,8 +47,24 @@ public class PlayerController : MonoBehaviour, IDamageable
     public float GetMaxHealth() => _status.GetMaxHealth();
     public float GetMaxStamina() => _status.GetMaxStamina();
 
-    public int GetBombCount() => _combat.BombCount;
-    public int GetMaxBombCount() => _combat.MaxBombCount;
+    public int GetBombCount()
+    {
+        if(_combat.CurrentWeapon as ThrowSystem != null)
+        {
+            ThrowSystem throwSystem = _combat.CurrentWeapon as ThrowSystem;
+            return throwSystem.ThrowableCount;
+        }
+        return 0;
+    }
+    public int GetMaxBombCount()
+    {
+        if (_combat.CurrentWeapon as ThrowSystem != null)
+        {
+            ThrowSystem throwSystem = _combat.CurrentWeapon as ThrowSystem;
+            return throwSystem.MaxThrowableCount;
+        }
+        return 0;
+    }
     public int GetAmmo()
     {
         if(_combat.CurrentWeapon as IFireable != null)

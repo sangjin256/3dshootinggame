@@ -39,7 +39,7 @@ public class PlayerMove : APlayerComponent
         _controller.Animator.SetFloat("Rotation", h);
 
         if (!_isRolling && !_isClimbing) _direction = new Vector3(h, -0.001f, v);
-
+        _direction = _direction.normalized;
         Jump();
         Sprint();
         Roll();
@@ -55,7 +55,6 @@ public class PlayerMove : APlayerComponent
             _direction.y = _yVelocity;
         }
 
-        _direction = _direction.normalized;
         if (!CameraManager.I.QVCamera.enabled || _isRolling) _direction = transform.TransformDirection(_direction);
         _characterController.Move(new Vector3(_direction.x * _moveSpeed, _direction.y * _originMoveSpeed, _direction.z * _moveSpeed) * Time.deltaTime);
 

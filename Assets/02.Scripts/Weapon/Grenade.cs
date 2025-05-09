@@ -1,16 +1,17 @@
 using UnityEngine;
 
-public class Grenade : MonoBehaviour, IThrowable
+public class Grenade : BaseThrowable
 {
-    private float cookTime;
+    public GameObject ExplosionEffectPrefab;
 
-    public void Throw()
+    // 충돌했을 때
+    private void OnCollisionEnter(Collision collision)
     {
+        if (collision.collider.CompareTag("Player") || collision.collider.GetInstanceID() == gameObject.GetInstanceID()) return;
+        Debug.Log(collision.collider);
+        GameObject effectObject = Instantiate(ExplosionEffectPrefab);
+        effectObject.transform.position = transform.position;
 
-    }
-
-    public void Cook()
-    {
-
+        ReturnToPool();
     }
 }

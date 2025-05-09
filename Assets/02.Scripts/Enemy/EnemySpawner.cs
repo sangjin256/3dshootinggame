@@ -86,7 +86,7 @@ public class EnemySpawner : MonoBehaviour
             if (tooClose) continue;
 
             _placedEnemyPositionList.Add(spawnPoint);
-            int index = Random.Range(0, 2);
+            int index = Random.Range(0, EnemyPoolList.Count);
             Enemy enemy = EnemyPoolList[index].Get();
             enemy.transform.position = spawnPoint;
             spawned++;
