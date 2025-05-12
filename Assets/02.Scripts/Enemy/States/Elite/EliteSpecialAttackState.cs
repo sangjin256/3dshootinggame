@@ -12,6 +12,8 @@ public class EliteSpecialAttackState : IState<Enemy>
         _eliteEnemy = enemy as EliteEnemy;
         enemy.GetAnimator().SetTrigger("MoveToAttackDelay");
         _attackElapsedTime = 0;
+
+        _eliteEnemy.OnSpecialAttack = PerformSpecialAttack;
     }
 
     public void Update(Enemy enemy)
@@ -28,7 +30,6 @@ public class EliteSpecialAttackState : IState<Enemy>
         if (_attackElapsedTime >= _eliteEnemy.SpecialAttackCooltime)
         {
             enemy.GetAnimator().SetTrigger("AttackDelayToSpecialAttack");
-            PerformSpecialAttack(enemy);
             _attackElapsedTime = 0f;
 
             if (distanceToPlayer <= _eliteEnemy.SpecialAttackDistance)
@@ -43,18 +44,18 @@ public class EliteSpecialAttackState : IState<Enemy>
         }
     }
 
-    private void PerformSpecialAttack(Enemy enemy)
+    private void PerformSpecialAttack()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(enemy.transform.position, (enemy as EliteEnemy).SpecialAttackRadius);
+        Collider[] hitColliders = Physics.OverlapSphere(_eliteEnemy.transform.position, _eliteEnemy.SpecialAttackRadius);
         foreach (var hitCollider in hitColliders)
         {
             if (hitCollider.CompareTag("Player"))
             {
                 Damage damage = new Damage();
-                damage.Value = (int)(enemy as EliteEnemy).SpecialAttackDamage;
-                damage.From = enemy.gameObject;
+                damage.Value = (int)_eliteEnemy.SpecialAttackDamage;
+                damage.From = _eliteEnemy.gameObject;
                 GameManager.Instance.Player.TakeDamage(damage);
-                ApplyKnockback(GameManager.Instance.Player.GetComponent<CharacterController>(), enemy);
+                ApplyKnockback(GameManager.Instance.Player.GetComponent<CharacterController>(), _eliteEnemy);
             }
         }
     }

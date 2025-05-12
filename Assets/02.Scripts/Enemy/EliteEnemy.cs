@@ -1,3 +1,4 @@
+using System;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ public class EliteEnemy : Enemy
     public float SpecialAttackDamage;
     public float KnockbackHeight;
     public float KnockbackDuration;
+
+    public Action OnSpecialAttack;
 
     public override void TakeDamage(Damage damage)
     {
