@@ -1030,6 +1030,7 @@ GameObject:
   - component: {fileID: 5726821294030021737}
   - component: {fileID: 1419593455757673574}
   - component: {fileID: 2669717842326108498}
+  - component: {fileID: 1895862090563126747}
   m_Layer: 3
   m_Name: PsionicModel
   m_TagString: Untagged
@@ -1198,6 +1199,18 @@ MonoBehaviour:
   ThrowablePrefab: {fileID: 8362098096096509487, guid: a5b46966ec6672f4980db3463bfae20f, type: 3}
   OriginPosition: {fileID: 5490250063473536961}
   GrenadeOnHand: {fileID: 5684446054047100085}
+--- !u!114 &1895862090563126747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992038578270931437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d545ec587688f0840becb8b8703ac18f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3051716704281589550
 GameObject:
   m_ObjectHideFlags: 0
