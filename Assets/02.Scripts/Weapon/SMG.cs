@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class SMG : BaseFirearm
@@ -32,7 +33,6 @@ public class SMG : BaseFirearm
                 bool isHit = Physics.Raycast(ray, out hitInfo, 50f, LayerMask);
                 if (isHit)
                 {
-                    Debug.Log(hitInfo.collider);
                     CurrentAmmo--;
                     PlayerEventManager.Instance.OnFire?.Invoke();
                     OnHitEffect(hitInfo, 0.05f);

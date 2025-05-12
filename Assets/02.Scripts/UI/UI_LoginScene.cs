@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Security.Cryptography;
 using System.Text;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class UI_InputFields
@@ -149,7 +150,7 @@ public class UI_LoginScene : MonoBehaviour
         // 4. 맞다면 로그인
 
         LoginInputFields.ResultText.text = "로그인 성공!";
-        LoginInputFields.ResultText.transform.DOShakePosition(0.5f, 15);
+        SceneManager.LoadScene(1);
     }
 
     public void LoginCheck()

@@ -37,7 +37,7 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Attack();
+                GameManager.Instance.Player.Animator.SetTrigger("Slash");
                 _attackElapsedtime = 0;
             }
             else
@@ -77,8 +77,6 @@ public abstract class BaseMelee : MonoBehaviour, IMeleeable, IWeapon
     {
         Collider[] colliders = Physics.OverlapSphere(PlayerTransform.position, Range, LayerMask);
 
-        //AttackAnimation();
-        GameManager.Instance.Player.Animator.SetTrigger("Slash");
         SlashEffect.Play();
 
         for(int i = 0; i < colliders.Length; i++)

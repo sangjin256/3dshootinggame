@@ -7,6 +7,7 @@ public class PlayerEventManager : BehaviourSingleton<PlayerEventManager>
     public Action OnFire;
     public Action<int> OnWeaponChanged;
     public Action<bool> OnReload;
+    public Action OnSwordAttack;
 
     public Action<float> OnStaminaChanged;
     public Action<float> OnHealthChanged;

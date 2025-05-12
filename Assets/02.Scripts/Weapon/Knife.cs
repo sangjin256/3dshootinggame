@@ -11,6 +11,7 @@ public class Knife : BaseMelee
     private void Start()
     {
         _originalLocalPosition = transform.localPosition;
+        PlayerEventManager.Instance.OnSwordAttack += Attack;
     }
 
     public override void AttackAnimation()
