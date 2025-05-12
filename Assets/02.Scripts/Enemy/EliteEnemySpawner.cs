@@ -3,38 +3,38 @@ using System.Collections.Generic;
 
 public class EliteEnemySpawner : MonoBehaviour
 {
-    public GameObject[] eliteEnemyPrefabs; 
-    public float spawnInterval = 30f;
-    public float spawnRadius = 20f;
-    public int maxEliteEnemies = 2;
+    public GameObject[] EliteEnemyPrefabs; 
+    public float SpawnInterval = 30f;
+    public float SpawnRadius = 20f;
+    public int MaxEliteEnemies = 2;
 
-    private float nextSpawnTime;
-    private List<GameObject> activeEliteEnemies = new List<GameObject>();
+    private float _nextSpawnTime;
+    private List<GameObject> _activeEliteEnemieList = new List<GameObject>();
 
     private void Start()
     {
-        nextSpawnTime = Time.time + spawnInterval;
+        _nextSpawnTime = Time.time + SpawnInterval;
     }
 
     private void Update()
     {
-        activeEliteEnemies.RemoveAll(item => item == null);
+        _activeEliteEnemieList.RemoveAll(x => x == null);
 
-        if (Time.time >= nextSpawnTime && activeEliteEnemies.Count < maxEliteEnemies)
+        if (Time.time >= _nextSpawnTime && _activeEliteEnemieList.Count < MaxEliteEnemies)
         {
             SpawnEliteEnemy();
-            nextSpawnTime = Time.time + spawnInterval;
+            _nextSpawnTime = Time.time + SpawnInterval;
         }
     }
 
     private void SpawnEliteEnemy()
     {
-        Vector3 randomPosition = transform.position + Random.insideUnitSphere * spawnRadius;
+        Vector3 randomPosition = transform.position + Random.insideUnitSphere * SpawnRadius;
         randomPosition.y = 1f;
 
-        int randomIndex = Random.Range(0, eliteEnemyPrefabs.Length);
-        GameObject eliteEnemy = Instantiate(eliteEnemyPrefabs[randomIndex], randomPosition, Quaternion.identity);
+        int randomIndex = Random.Range(0, EliteEnemyPrefabs.Length);
+        GameObject eliteEnemy = Instantiate(EliteEnemyPrefabs[randomIndex], randomPosition, Quaternion.identity);
         
-        activeEliteEnemies.Add(eliteEnemy);
+        _activeEliteEnemieList.Add(eliteEnemy);
     }
 } 
